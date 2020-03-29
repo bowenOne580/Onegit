@@ -1,13 +1,17 @@
-#三人简易斗地主
-import random as r
+#双人简易斗地主
+import random as r #导入随机数库
 list=['KING','SMALL','2','3','4','5','6','7','8','9','10','J','Q','K','A']
+#创建牌的数组
 time=[1,1,4,4,4,4,4,4,4,4,4,4,4,4,4]
+#记录牌的次数
 myCard=[]
 enemyCard=[]
 score=100
-a=0
-b=1 #统计次数
-boss=[]
+a=0 #随机牌
+b=1 #统计分发次数
+boss=[] #地主牌
+
+#随机发牌
 while b!=38:
     a=r.randint(0,14)
     if time[a]==0:
@@ -23,7 +27,8 @@ while b!=38:
         enemyCard.append(list[a])
         time[a]-=1
     b+=1
-    #随机发牌
+
+#创建排序方法（便于出牌）
 def sort(a):
     l=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     for i in range(len(a)):
@@ -44,6 +49,7 @@ def sort(a):
         else:
             a[i]=int(a[i])
             l[a[i]-3]+=1
+        #将牌变为数字，便于比较
     j=0
     for i in range(len(l)):
         while l[i]!=0:
@@ -66,7 +72,8 @@ def sort(a):
             l[i]-=1
             j+=1
     return a
-#牌的排序方法
+
+#找牌（在判断牌是否出错时要用）
 def find(num,listName):
     aaa=0
     for i in listName:
@@ -76,6 +83,8 @@ def find(num,listName):
         return False
     else:
         return True
+
+#也是找牌（不同的是返回了牌的位置）
 def find2(num,listName):
     i=1
     aaa=0
@@ -88,19 +97,21 @@ def find2(num,listName):
         return i
     else:
         return False
-print(sort(myCard))
+
 #看自己得到的牌
+print(sort(myCard))
+#地主牌分发
 f=input("叫地主吗? 1.3分 2.2分 3.1分 4.不叫")
 if (f=='1' or f=='2' or f=='3'):
     for i in range(len(boss)):
         myCard.append(boss[i])
-    score*=f*2
+    score*=f*2 #分数方法现未完善
 else:
     for i in range(len(boss)):
         enemyCard.append(boss[i])
-#地主牌分发
-d=1
-def beat(c,d,score): #机器人打牌方法
+
+d=1 #判断是否出牌变量
+def beat(c,d,score): #机器人打牌方法（较笨）
     length = len(c)
     enemyCard2=[] #存储整数型数组
     for i in range(len(c)):
@@ -170,6 +181,7 @@ def beat(c,d,score): #机器人打牌方法
                 enemyCard2.pop(i)
                 d = 0
                 break
+    #应对对子
     elif length == 2:
         if c[0]=='KING':
             score*=5
@@ -182,6 +194,7 @@ def beat(c,d,score): #机器人打牌方法
                 enemyCard2.pop(i)
                 d=0
                 break
+    #应对三不带
     elif length == 3:
         for i in range(len(enemyCard2)-2):
             if enemyCard2[i] == enemyCard2[i+2] and enemyCard2[i]>c[0]:
@@ -194,12 +207,14 @@ def beat(c,d,score): #机器人打牌方法
                 enemyCard2.pop(i)
                 d = 0
                 break
+    #应对三带一或者炸弹
     elif length == 4:
         for i in range(len(enemyCard2)-1):
             if enemyCard2[i]==enemyCard2[i+1] and enemyCard2[i]>c[0]:
                 j+=1
             else:
                 j=0
+
             if j==2:
                 if c[0]!=c[3]:
                     if enemyCard2[0]!=enemyCard2[i]:
@@ -213,6 +228,7 @@ def beat(c,d,score): #机器人打牌方法
                         enemyCard2.pop(i - 1)
                         enemyCard2.pop(0)
                         break
+
                     elif enemyCard2[i+2]!=enemyCard2[i]:
                         print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i+1] + enemyCard[i+2])
                         enemyCard.pop(i + 2)
@@ -225,6 +241,7 @@ def beat(c,d,score): #机器人打牌方法
                         enemyCard2.pop(i - 1)
                         d = 0
                         break
+
                     else:
                         print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i+1] + enemyCard[i+3])
                         enemyCard.pop(i + 3)
@@ -237,6 +254,7 @@ def beat(c,d,score): #机器人打牌方法
                         enemyCard2.pop(i - 1)
                         d = 0
                         break
+
                 else:
                     if enemyCard2[i+2]==enemyCard2[i+1]:
                         print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i+1] + enemyCard[i+2])
@@ -249,8 +267,9 @@ def beat(c,d,score): #机器人打牌方法
                         enemyCard2.pop(i)
                         enemyCard2.pop(i - 1)
                         d = 0
-                        score*=2
+                        score*=2#炸弹积分
                         break
+
                     elif enemyCard[len(enemyCard)-1]=='KING' and enemyCard[len(enemyCard)-2]=='SMALL':
                         print('王炸')
                         enemyCard.pop(len(enemyCard)-1)
@@ -258,8 +277,10 @@ def beat(c,d,score): #机器人打牌方法
                         enemyCard2.pop(len(enemyCard) - 1)
                         enemyCard2.pop(len(enemyCard) - 2)
                         d=0
-                        score*=5
+                        score*=5 #炸弹积分
                         break
+    # 大于四张是顺子，现未完善
+    '''
     elif length>4:
         if c[0]+1==c[1]:
             a=c[0]+1
@@ -284,7 +305,8 @@ def beat(c,d,score): #机器人打牌方法
                         boo=0
                     times+=1
                 a+=1
-    #出牌策略(较笨)
+    '''
+    #不出牌
     if d==1:
         print("要不起")
 while len(myCard)!=0 and len(enemyCard)!=0:
@@ -292,9 +314,10 @@ while len(myCard)!=0 and len(enemyCard)!=0:
     bb=1
     wrong=[]
     c2 = []
-    if d==1:
+    if d==1: #d判断是否是出牌时机
         print(sort(myCard))
         c3=input("请出牌")
+        #输入牌到出牌组中
         if c3=='要不起':
             c2.append('要不起')
         else:
@@ -305,21 +328,22 @@ while len(myCard)!=0 and len(enemyCard)!=0:
                     pass
                 elif c3[i]=='K' and c3[i+1]=='I':
                     c2.append('KING')
-                    print('ok')
                     i+=3
                 elif c3[i]=='S' and c3[i+1]=='M':
                     c2.append('SMALL')
                     i+=4
                 else:
                     c2.append(c3[i])
-        print(c2)
-        if c3!='要不起':
+                #到此已完善
+        #判断牌是否出错
+        if c3!='要不起': #只能处理int类型的变量
+            #若有人知道python里面数组到底存储的是什么，请教教我
             for j in range(len(c2)):
                 if not find(c2[j],myCard):
                     aa=0
                     break
                 wrong.append(c2[j])
-                myCard.pop(c2[j])
+                myCard.pop(int(c2[j]))
         else:
             aa=1
     enemyCard=sort(enemyCard)
