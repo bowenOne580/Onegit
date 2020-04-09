@@ -104,6 +104,7 @@ def find2(num, listName, start):
         return False
 
 
+
 # 看自己得到的牌
 print(sort(myCard))
 # 地主牌分发
@@ -321,6 +322,7 @@ def beat(c, d, score):  # 机器人打牌方法（较笨）
 
 while len(myCard) != 0 and len(enemyCard) != 0:
     aa = 1
+    bb = 0
     c2 = []  # c2存储字符串型列表（数组）
     if d == 1:  # d判断是否是出牌时机
         print(sort(myCard))
@@ -335,30 +337,47 @@ while len(myCard) != 0 and len(enemyCard) != 0:
                     c2.append('10')
                 elif c3[i] == '0':
                     pass
-                elif c3[i] == 'K' and c3[i + 1] == 'I':
+                elif c3[i] == 'K' and len(c3) > 1:
                     c2.append('KING')
                     i += 3
-                elif c3[i] == 'S' and c3[i + 1] == 'M':
+                    bb += 1
+                elif c3[i] == 'S' and len(c3) > 1:
                     c2.append('SMALL')
                     i += 4
+                    bb += 1
                 else:
                     c2.append(c3[i])
         # 判断牌是否出错
         if c3 != '要不起':  # 只能处理int类型的变量
             # 若有人知道python里面数组到底存储的是什么，请留言，谢谢
             i = -1
-            for j in range(len(c2)):
-                ifFind = find(c2[j], myCard, i + 1)
-                i = find2(c2[j], myCard, i + 1)
+            if bb == 1:
+                ifFind = find('KING', myCard, i + 1)
                 if not ifFind:
-                    aa = 0
+                    ifFind = find('SMALL', myCard, i + 1)
+                    if not ifFind:
+                        aa = 0
+                elif bb == 2:
+                    ifFind = find('KING', myCard, i + 1)
+                    if ifFind:
+                        ifFind = find('SMALL', myCard, i + 1)
+                        if ifFind:
+                            bb = 3
+                    if bb != 3:
+                        aa = 0
+            else:
+                for j in range(len(c2)):
+                    ifFind = find(c2[j], myCard, i + 1)
+                    i = find2(c2[j], myCard, i + 1)
+                    if not ifFind:
+                        aa = 0
         if aa == 1:
             for p in range(len(c2)):
-                myCard.pop(find2(p, myCard, 0))
+                myCard.pop(find2(c2[p], myCard, 0))
             beat(c2, d, score)
         else:
             print("牌出错了")
-    enemyCard=sort(enemyCard)
+    enemyCard = sort(enemyCard)
     d = 1
 
 # 最后输出谁胜利
