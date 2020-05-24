@@ -29,7 +29,7 @@ def bAbout():
 # 参数说明：1.窗口对象名 2.显示的文本名 3.背景颜色 4.字体及字号 5.窗口宽度 6.窗口高度
 
 # 此为欢迎文字的打印
-l = tk.Label(window, text='欢迎来到斗地主', fg='', font=('Consolas', 14), width=20, height=2)
+l = tk.Label(window, text='欢迎来到斗地主', font=('Consolas', 14), width=20, height=2)
 
 # 关于函数中的文字打印
 ab = tk.Label(window)
@@ -207,10 +207,7 @@ if f == '1' or f == '2' or f == '3':
 else:
     for i in range(len(boss)):
         enemyCard.append(boss[i])
-
 d = 1  # 判断是否出牌变量
-
-
 def beat(c, d, score):  # 机器人打牌方法（较笨）
     length = len(c)
     enemyCard2 = []  # 存储整数型数组
@@ -296,7 +293,6 @@ def beat(c, d, score):  # 机器人打牌方法（较笨）
                 j += 1
             else:
                 j = 0
-
             if j == 2:
                 if c[0] != c[3]:
                     if enemyCard2[0] != enemyCard2[i]:
@@ -310,7 +306,6 @@ def beat(c, d, score):  # 机器人打牌方法（较笨）
                         enemyCard2.pop(i - 1)
                         enemyCard2.pop(0)
                         break
-
                     elif enemyCard2[i + 2] != enemyCard2[i]:
                         print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i + 1] + enemyCard[i + 2])
                         enemyCard.pop(i + 2)
@@ -323,7 +318,6 @@ def beat(c, d, score):  # 机器人打牌方法（较笨）
                         enemyCard2.pop(i - 1)
                         d = 0
                         break
-
                     else:
                         print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i + 1] + enemyCard[i + 3])
                         enemyCard.pop(i + 3)
@@ -336,7 +330,6 @@ def beat(c, d, score):  # 机器人打牌方法（较笨）
                         enemyCard2.pop(i - 1)
                         d = 0
                         break
-
                 else:
                     if enemyCard2[i + 2] == enemyCard2[i + 1]:
                         print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i + 1] + enemyCard[i + 2])
@@ -351,7 +344,6 @@ def beat(c, d, score):  # 机器人打牌方法（较笨）
                         d = 0
                         score *= 2  # 炸弹积分
                         break
-
                     elif enemyCard[len(enemyCard) - 1] == 'KING' and enemyCard[len(enemyCard) - 2] == 'SMALL':
                         print('王炸')
                         enemyCard.pop(len(enemyCard) - 1)
@@ -393,8 +385,6 @@ def beat(c, d, score):  # 机器人打牌方法（较笨）
     # 不出牌
     if d == 1:
         print("要不起")
-
-
 def wrong(c3, c2, aa, flag):
     if c3 != '要不起':  # 只能处理int类型的变量
         # 若有人知道python里面数组到底存储的是什么，请留言，谢谢
@@ -422,8 +412,6 @@ def wrong(c3, c2, aa, flag):
         beat(c2, d, score)
     else:
         print("牌出错了")
-
-
 # 开发人员模式
 usrans = input("此次是否开启DEV模式（无视牌出错限制）？")
 flag = 0
@@ -432,7 +420,6 @@ if usrans != 'y' and 'Y' and 'yes' and 'YES':
 if flag == 0:
     print("开发人员模式已开启")
     flag = 2
-
 while len(myCard) != 0 and len(enemyCard) != 0:
     aa = 1
     bb = 0
@@ -468,7 +455,6 @@ while len(myCard) != 0 and len(enemyCard) != 0:
         wrong(c3, c2, aa, flag)
     enemyCard = sort(enemyCard)
     d = 1
-
 # 最后输出谁胜利
 if len(myCard) == 0:
     print('你赢了')
