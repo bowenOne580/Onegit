@@ -8,8 +8,14 @@ window = tk.Tk()  # 实例化，创建窗口
 window.title("斗地主")  # 窗口的标题
 window.geometry('600x480')  # 窗口的大小
 
+# 变量在此！
+var = ''  # 叫分变量
+
 # 定义所有是否碰到按钮变量
 ifAbout = False  # 关于函数变量
+ifStart = False  # 开始函数变量
+ifQuit = False  # 退出函数变量
+ifJump = False
 
 
 # 定义函数
@@ -19,33 +25,64 @@ def bAbout():
     global ifAbout
     if not ifAbout:
         ifAbout = True
-        ab["text"] = "版本：v1.1.4(测试版本)" + "\n" + "Writen by wbw"
+        ab["text"] = "版本：v1.1.8(测试版本)" + "\n" + "Release Date:7/3/2020" + "\n" + "Writen by wbw"
     else:
         ifAbout = False
         ab["text"] = ''
 
 
-# 以下为标签内容显示以及命令执行，写在函数下面是因为python执行顺序是从前往后的
-# 参数说明：1.窗口对象名 2.显示的文本名 3.背景颜色 4.字体及字号 5.窗口宽度 6.窗口高度
+entry1 = tk.Entry(window, show=None)
 
-# 此为欢迎文字的打印
-l = tk.Label(window, text='欢迎来到斗地主', font=('Consolas', 14), width=20, height=2)
 
-# 关于函数中的文字打印
-ab = tk.Label(window)
+# 2.开始函数
+def start():
+    global ifStart
+    global var
+    if not ifStart:
+        ifStart = True
+        r1.pack()
+        r2.pack()
+        r3.pack()
+        r4.pack()
+        r5.pack()
+        entry1.pack()
+        confirm.pack()
+        st["text"] = '结束游戏'
+        window.title = '叫分'
+    else:
+        ifStart = False
+        r1.pack_forget()
+        r2.pack_forget()
+        r3.pack_forget()
+        r4.pack_forget()
+        r5.pack_forget()
+        entry1.pack_forget()
+        confirm.pack_forget()
+        st["text"] = '开始游戏'
+        window.title = '斗地主'
 
-# 关于的打印
-b = tk.Button(window, text='关于', font=('Consolas', 12), width=10, height=1, command=bAbout)
 
-# 以下为放置标签 放置的顺序控制显示顺序
-# 放置标签方式：1.标签名.pack 2.标签名.place
-# 放置方式好像还有个grid，但区别未知
+var = entry1.get()
 
-l.pack()
-b.pack()
-ab.pack()
 
-window.mainloop()  # 主窗口循环，类似于while True
+# 跳转出牌界面函数
+def jump():
+    global ifJump, var
+    if not ifJump:
+        ifJump = True
+        r1.pack_forget()
+        r2.pack_forget()
+        r3.pack_forget()
+        r4.pack_forget()
+        r5.pack_forget()
+        entry1.pack_forget()
+        confirm.pack_forget()
+        see()
+    else:
+        ifJump = False
+
+
+# 此处叫分完毕
 
 # 创建牌的数组
 
@@ -195,12 +232,8 @@ def find2(num, listName, start):
         return False
 
 
-'''
-# 看自己得到的牌
-print(sort(myCard))
-# 地主牌分发
-f = input("叫地主吗? 1.3分 2.2分 3.1分 4.不叫")
-if f == '1' or f == '2' or f == '3':
+f = var
+if f == 1 or f == 2 or var == 3:
     for i in range(len(boss)):
         myCard.append(boss[i])
     score *= f * 2  # 分数方法现未完善
@@ -208,6 +241,71 @@ else:
     for i in range(len(boss)):
         enemyCard.append(boss[i])
 d = 1  # 判断是否出牌变量
+
+
+def see():
+    global ifJump
+    if ifJump:
+        sort(myCard)
+        for i in range(0, 17):
+            myCardShow.pack()
+            myCardShow["text"] += myCard[i] + " "
+        print(myCard)
+
+
+def qu():
+    global ifQuit
+    if not ifQuit:
+        ifQuit = True
+        quit()
+    else:
+        ifQuit = False
+
+
+# 以下为标签内容显示以及命令执行，写在函数下面是因为python执行顺序是从前往后的
+# 参数说明：1.窗口对象名 2.显示的文本名 3.背景颜色 4.字体及字号 5.窗口宽度 6.窗口高度
+
+# 此为欢迎文字的打印
+l = tk.Label(window, text='欢迎来到斗地主', font=('Consolas', 14), width=20, height=2)
+
+# 关于函数中的文字打印
+ab = tk.Label(window)
+
+myCardShow = tk.Label(window, text='', font=('Consolas', 14), width=50, height=3)
+
+r1 = tk.Label(window, text='3分')
+r2 = tk.Label(window, text='2分')
+r3 = tk.Label(window, text='1分')
+r4 = tk.Label(window, text='不叫（填0）')
+r5 = tk.Label(window, text='您的选择：')
+
+# 退出
+q = tk.Button(window, text='退出', font=('Consolas', 12), width=10, height=1, command=qu)
+
+# 开始按钮的打印
+st = tk.Button(window, text='开始游戏', font=('Consolas', 12), width=10, height=1, command=start)
+
+# 关于按钮的打印
+b = tk.Button(window, text='关于', font=('Consolas', 12), width=10, height=1, command=bAbout)
+
+# 确定按钮的打印
+confirm = tk.Button(window, text='确定', font=('Consolas', 12), width=10, height=1, command=jump)
+
+# 以下为放置标签 放置的顺序控制显示顺序
+# 放置标签方式：1.标签名.pack 2.标签名.place
+# 放置方式好像还有个grid，但区别未知
+
+l.pack()
+st.pack()
+q.pack(side='bottom')
+b.pack(side='bottom')
+ab.pack(side='bottom')
+
+window.mainloop()  # 主窗口循环，类似于while True
+
+# 地主牌分发
+
+'''
 def beat(c, d, score):  # 机器人打牌方法（较笨）
     length = len(c)
     enemyCard2 = []  # 存储整数型数组
