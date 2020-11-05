@@ -18,13 +18,13 @@ while b != 38:
     if time[a] == 0:
         b -= 1
         pass
-    if time[a] != 0 and b <= 17:
+    elif b <= 17:
         myCard.append(list[a])
         time[a] -= 1
-    elif 17 < b <= 20 and time[a] != 0:
+    elif 17 < b <= 20:
         boss.append(list[a])
         time[a] -= 1
-    elif 20 < b <= 37 and time[a] != 0:
+    elif 20 < b <= 37:
         enemyCard.append(list[a])
         time[a] -= 1
     b += 1
@@ -122,11 +122,11 @@ def sort2(a):  # 不同之处在于数组是整形的，输出的也是整形
 
 # 找牌（在判断牌是否出错时要用）
 def find(num, listName, start):
-    aaa = 0
+    flagTmp = 0
     for i in range(len(listName)):
         if listName[i] == num and i >= start and len(num) == len(listName[i]):
-            aaa = 1
-    if aaa == 0:
+            flagTmp = 1
+    if flagTmp == 0:
         return False
     else:
         return True
@@ -135,13 +135,13 @@ def find(num, listName, start):
 # 也是找牌（不同的是返回了牌的位置）
 def find2(num, listName, start):
     i = 0
-    aaa = 1
+    flagTmp = 1
     for j in range(len(listName)):
         if listName[j] == num and j >= start and len(num) == len(listName[j]):
-            aaa = 0
+            flagTmp = 0
             break
         i += 1
-    if aaa == 0:
+    if flagTmp == 0:
         return i
     else:
         return False
@@ -208,6 +208,7 @@ def beat(c, d):  # 机器人打牌方法（较笨）
     # 敌方牌转为整数
     sort(enemyCard)
     sort2(enemyCard2)
+    sort2(c)
     j = 1
     if length == 1:  # 应对出单张牌
         for i in range(len(enemyCard2)):
@@ -249,14 +250,14 @@ def beat(c, d):  # 机器人打牌方法（较笨）
     # 应对三带一或者炸弹
     elif length == 4:
         for i in range(len(enemyCard2) - 1):
-            if enemyCard2[i] == enemyCard2[i + 1] and enemyCard2[i] > c[0]:
+            if enemyCard2[i] == enemyCard2[i + 1] and enemyCard2[i] >= c[1]:
                 j += 1
             else:
                 j = 0
-            if j == 2:
+            if j == 3:
                 flag1 = 1
                 if c[0] != c[3]:
-                    if enemyCard2[0] != enemyCard2[i]:  # 三带一
+                    if enemyCard2[0] != enemyCard2[i] and enemyCard2[0] > c[0]:  # 三带一
                         print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i + 1] + enemyCard[0])
                         enemyCard.pop(i + 1)
                         enemyCard.pop(i)
@@ -267,9 +268,24 @@ def beat(c, d):  # 机器人打牌方法（较笨）
                         enemyCard2.pop(i - 1)
                         enemyCard2.pop(0)
                         d = 0
+                        #print('第一')
                         break
 
-                    elif enemyCard2[i + 2] != enemyCard2[i]:
+                    elif enemyCard2[i] > c[1]:
+                        print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i + 1] + enemyCard[i - 2])
+                        enemyCard.pop(i - 2)
+                        enemyCard.pop(i + 1)
+                        enemyCard.pop(i)
+                        enemyCard.pop(i - 1)
+                        enemyCard2.pop(i - 2)
+                        enemyCard2.pop(i + 1)
+                        enemyCard2.pop(i)
+                        enemyCard2.pop(i - 1)
+                        d = 0
+                        #print('第二')
+                        break
+
+                    elif enemyCard2[i] == c[1] and i + 2 < length:
                         print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i + 1] + enemyCard[i + 2])
                         enemyCard.pop(i + 2)
                         enemyCard.pop(i + 1)
@@ -280,19 +296,9 @@ def beat(c, d):  # 机器人打牌方法（较笨）
                         enemyCard2.pop(i)
                         enemyCard2.pop(i - 1)
                         d = 0
-                        break
-
-                    else:
-                        print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i + 1] + enemyCard[i + 3])
-                        enemyCard.pop(i + 3)
-                        enemyCard.pop(i + 1)
-                        enemyCard.pop(i)
-                        enemyCard.pop(i - 1)
-                        enemyCard2.pop(i + 3)
-                        enemyCard2.pop(i + 1)
-                        enemyCard2.pop(i)
-                        enemyCard2.pop(i - 1)
-                        d = 0
+                        if enemyCard2[i + 2] == enemyCard2[i]:
+                            score *= 2
+                        #print('第三')
                         break
 
                 else:
@@ -308,18 +314,19 @@ def beat(c, d):  # 机器人打牌方法（较笨）
                         enemyCard2.pop(i - 1)
                         d = 0
                         score *= 2  # 炸弹积分
+                        #print('第四')
                         break
 
                     elif enemyCard[len(enemyCard) - 1] == 'KING' and enemyCard[len(enemyCard) - 2] == 'SMALL':
-                        print('王炸')
+                        print(enemyCard[len(enemyCard)-1]+enemyCard[len(enemyCard)-2])
                         enemyCard.pop(len(enemyCard) - 1)
                         enemyCard.pop(len(enemyCard) - 2)
                         enemyCard2.pop(len(enemyCard) - 1)
                         enemyCard2.pop(len(enemyCard) - 2)
                         d = 0
                         score *= 5  # 炸弹积分
+                        #print('第五')
                         break
-                    score *= 10
     # 大于四张是顺子，三带二或连对
     elif length > 4:
         flag1 = 1
@@ -388,13 +395,15 @@ def wrong(c3, c2, aa, flag):
 
 
 # 开发人员模式
-usrans = input("此次是否开启DEV模式（无视牌出错限制）？")
+usrAns = input("此次是否开启DEV模式（无视牌出错限制）？")
 flag = 0
-if usrans != 'y' and 'Y' and 'yes' and 'YES':
+isFinish = 0
+if usrAns != 'y' and 'Y' and 'yes' and 'YES':
     flag = 1
 if flag == 0:
     print("开发人员模式已开启")
     flag = 2
+    isFinish = 1
 
 while len(myCard) != 0 and len(enemyCard) != 0:
     aa = 1
@@ -407,13 +416,22 @@ while len(myCard) != 0 and len(enemyCard) != 0:
         if c3 == '要不起':
             c2.append('要不起')
             # 特殊情况，无法用数字表示
+        elif c3 == 'Ter' or c3 == 'ter' and isFinish == 1:
+            break
+            # 开启开发模式后可用立即终止出牌功能，以便测试特殊数据
         else:
             i = 0
             while i < len(c3):  # 遍历数组写入c2
                 if c3[i] == '1':
-                    c2.append('10')
+                    if len(c3) == 1:
+                        c2.append('1')
+                    else:
+                        c2.append('10')
                 elif c3[i] == '0':
-                    pass
+                    if c3[i-1] == '1':
+                        pass
+                    else:
+                        c2.append('0')
                 elif c3[i] == 'I':
                     c2.pop()
                     c2.append('KING')
