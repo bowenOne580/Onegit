@@ -253,7 +253,7 @@ def beat(c, d):  # 机器人打牌方法（较笨）
             if enemyCard2[i] == enemyCard2[i + 1] and enemyCard2[i] >= c[1]:
                 j += 1
             else:
-                j = 0
+                j = 1
             if j == 3:
                 flag1 = 1
                 if c[0] != c[3]:
@@ -268,24 +268,22 @@ def beat(c, d):  # 机器人打牌方法（较笨）
                         enemyCard2.pop(i - 1)
                         enemyCard2.pop(0)
                         d = 0
-                        #print('第一')
                         break
 
-                    elif enemyCard2[i] > c[1]:
+                    elif enemyCard2[i] > c[0] and i - 2 >= 0:
                         print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i + 1] + enemyCard[i - 2])
-                        enemyCard.pop(i - 2)
                         enemyCard.pop(i + 1)
                         enemyCard.pop(i)
                         enemyCard.pop(i - 1)
-                        enemyCard2.pop(i - 2)
+                        enemyCard.pop(i - 2)
                         enemyCard2.pop(i + 1)
                         enemyCard2.pop(i)
                         enemyCard2.pop(i - 1)
+                        enemyCard2.pop(i - 2)
                         d = 0
-                        #print('第二')
                         break
 
-                    elif enemyCard2[i] == c[1] and i + 2 < length:
+                    elif enemyCard2[i] == c[0] and i + 2 < length:
                         print(enemyCard[i - 1] + enemyCard[i] + enemyCard[i + 1] + enemyCard[i + 2])
                         enemyCard.pop(i + 2)
                         enemyCard.pop(i + 1)
@@ -298,7 +296,6 @@ def beat(c, d):  # 机器人打牌方法（较笨）
                         d = 0
                         if enemyCard2[i + 2] == enemyCard2[i]:
                             score *= 2
-                        #print('第三')
                         break
 
                 else:
@@ -314,7 +311,6 @@ def beat(c, d):  # 机器人打牌方法（较笨）
                         enemyCard2.pop(i - 1)
                         d = 0
                         score *= 2  # 炸弹积分
-                        #print('第四')
                         break
 
                     elif enemyCard[len(enemyCard) - 1] == 'KING' and enemyCard[len(enemyCard) - 2] == 'SMALL':
@@ -325,7 +321,6 @@ def beat(c, d):  # 机器人打牌方法（较笨）
                         enemyCard2.pop(len(enemyCard) - 2)
                         d = 0
                         score *= 5  # 炸弹积分
-                        #print('第五')
                         break
     # 大于四张是顺子，三带二或连对
     elif length > 4:
@@ -378,7 +373,8 @@ def wrong(c3, c2, aa, flag):
     else:
         aa = 2
     if c3 == '':
-        aa = 0
+        print('你还没有输入')
+        return
     if flag == 2:
         aa = 2
     if aa == 1:
@@ -404,13 +400,20 @@ if flag == 0:
     print("开发人员模式已开启")
     flag = 2
     isFinish = 1
+    isSee = 1
+
+sort(enemyCard)
+sort(myCard)
 
 while len(myCard) != 0 and len(enemyCard) != 0:
     aa = 1
     bb = 0
     c2 = []  # c2存储字符串型列表（数组）
     if d == 1:  # d判断是否是出牌时机
-        print(sort(myCard))
+        print(myCard)
+        if isSee == 1:
+            print("ENEMY:")
+            print(enemyCard)
         # 输入牌到出牌组中
         c3 = input("请出牌")
         if c3 == '要不起':
