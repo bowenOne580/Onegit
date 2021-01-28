@@ -162,10 +162,11 @@ else:
 d = 1  # 判断是否出牌变量
 
 flag1 = 0
-
+flag5 = 0
+length = 0
 
 def beat(c, d):  # 机器人打牌方法（较笨）
-    global flag1, score
+    global flag1, score, length
     length = len(c)
     enemyCard2 = []  # 存储整数型数组
     for i in range(len(c)):
@@ -358,6 +359,10 @@ def beat(c, d):  # 机器人打牌方法（较笨）
 
 
 def wrong(c3, c2, aa, flag):
+    global flag5, length
+    if flag5 == 0:
+        length = len(c3)
+        flag5 = 1
     if c3 != '要不起':  # 只能处理int类型的变量
         # 若有人知道python里面数组到底存储的是什么，请留言，谢谢
         i = -1
@@ -372,6 +377,14 @@ def wrong(c3, c2, aa, flag):
                 aa = 0
     else:
         aa = 2
+    if len(c3) != length:
+        k = 1
+        for i in range(len(c3)):
+            if i>0:
+                if c3[i] != c3[i-1]:
+                    k = 0
+        if k == 0:
+            aa = 0
     if c3 == '':
         print('你还没有输入')
         return
@@ -394,6 +407,7 @@ def wrong(c3, c2, aa, flag):
 usrAns = input("此次是否开启DEV模式（无视牌出错限制）？")
 flag = 0
 isFinish = 0
+isSee = 0
 if usrAns != 'y' and 'Y' and 'yes' and 'YES':
     flag = 1
 if flag == 0:

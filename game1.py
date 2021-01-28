@@ -8,36 +8,36 @@ window = tk.Tk()  # 实例化，创建窗口
 window.title("斗地主")  # 窗口的标题
 window.geometry('600x480')  # 窗口的大小
 
-# 变量在此！
-var = ''  # 叫分变量
-
 # 定义所有是否碰到按钮变量
 ifAbout = False  # 关于函数变量
 ifStart = False  # 开始函数变量
 ifQuit = False  # 退出函数变量
 ifJump = False
+ifEnter = False
+
+var = 4  # 测试用途（和1,2,3区分开来）
 
 
 # 定义函数
+
 
 # 1.关于函数
 def bAbout():
     global ifAbout
     if not ifAbout:
         ifAbout = True
-        ab["text"] = "版本：v1.1.8(测试版本)" + "\n" + "Release Date:7/3/2020" + "\n" + "Writen by wbw"
+        ab["text"] = "版本：v1.1.8(测试版本)" + "\n" + "Release Date:1/28/2021" + "\n" + "Written by wbw"
     else:
         ifAbout = False
         ab["text"] = ''
 
 
-entry1 = tk.Entry(window, show=None)
+entry1 = tk.Entry(window, show=None)  # 叫分框
 
 
 # 2.开始函数
 def start():
-    global ifStart
-    global var
+    global ifStart, var
     if not ifStart:
         ifStart = True
         r1.pack()
@@ -45,7 +45,7 @@ def start():
         r3.pack()
         r4.pack()
         r5.pack()
-        entry1.pack()
+        enter()
         confirm.pack()
         st["text"] = '结束游戏'
         window.title = '叫分'
@@ -62,12 +62,14 @@ def start():
         window.title = '斗地主'
 
 
-var = entry1.get()
+def enter():
+    global var
+    entry1.pack()
 
 
 # 跳转出牌界面函数
 def jump():
-    global ifJump, var
+    global ifJump, var, myCard, enemyCard, boss
     if not ifJump:
         ifJump = True
         r1.pack_forget()
@@ -75,6 +77,7 @@ def jump():
         r3.pack_forget()
         r4.pack_forget()
         r5.pack_forget()
+        var = entry1.get()
         entry1.pack_forget()
         confirm.pack_forget()
         see()
@@ -232,11 +235,9 @@ def find2(num, listName, start):
         return False
 
 
-f = var
-if f == 1 or f == 2 or var == 3:
+if var == '1' or var == '2' or var == '3':
     for i in range(len(boss)):
         myCard.append(boss[i])
-    score *= f * 2  # 分数方法现未完善
 else:
     for i in range(len(boss)):
         enemyCard.append(boss[i])
@@ -250,7 +251,6 @@ def see():
         for i in range(0, 17):
             myCardShow.pack()
             myCardShow["text"] += myCard[i] + " "
-        print(myCard)
 
 
 def qu():
@@ -300,11 +300,10 @@ st.pack()
 q.pack(side='bottom')
 b.pack(side='bottom')
 ab.pack(side='bottom')
-
+print(var)
 window.mainloop()  # 主窗口循环，类似于while True
-
 # 地主牌分发
-
+# print(var)
 '''
 def beat(c, d, score):  # 机器人打牌方法（较笨）
     length = len(c)
