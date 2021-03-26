@@ -147,17 +147,6 @@ def find2(num, listName, start):
         return False
 
 
-# 看自己得到的牌
-print(sort(myCard))
-# 地主牌分发
-f = input("叫地主吗? 1.3分 2.2分 3.1分 4.不叫")
-if f == '1' or f == '2' or f == '3':
-    for i in range(len(boss)):
-        myCard.append(boss[i])
-    score *= int(f) * 2
-else:
-    for i in range(len(boss)):
-        enemyCard.append(boss[i])
 
 d = 1  # 判断是否出牌变量
 
@@ -403,70 +392,102 @@ def wrong(c3, c2, aa, flag):
         print("牌出错了")
 
 
-# 开发人员模式
-usrAns = input("此次是否开启DEV模式（无视牌出错限制）？")
-flag = 0
-isFinish = 0
-isSee = 0
-if usrAns != 'y' and 'Y' and 'yes' and 'YES':
-    flag = 1
-if flag == 0:
-    print("开发人员模式已开启")
-    flag = 2
-    isFinish = 1
-    isSee = 1
-
 sort(enemyCard)
 sort(myCard)
 
-while len(myCard) != 0 and len(enemyCard) != 0:
-    aa = 1
-    bb = 0
-    c2 = []  # c2存储字符串型列表（数组）
-    if d == 1:  # d判断是否是出牌时机
-        print(myCard)
-        if isSee == 1:
-            print("ENEMY:")
-            print(enemyCard)
-        # 输入牌到出牌组中
-        c3 = input("请出牌")
-        if c3 == '要不起':
-            c2.append('要不起')
-            # 特殊情况，无法用数字表示
-        elif c3 == 'Ter' or c3 == 'ter' and isFinish == 1:
-            break
-            # 开启开发模式后可用立即终止出牌功能，以便测试特殊数据
+now = "start"
+
+ki=1
+
+while ki == 1:
+    print("1:开始")
+    print("2.帮助")
+    print("3.关于")
+    print("4.退出")
+    uc = input()
+    if uc == '1': now = "ingame"
+    if uc == '2': now = "help"
+    if uc == '3': now = "about"
+    if uc == '4': break
+    if now == 'ingame':
+        # 看自己得到的牌
+        print(sort(myCard))
+        # 地主牌分发
+        f = input("叫地主吗? 1.3分 2.2分 3.1分 4.不叫")
+        if f == '1' or f == '2' or f == '3':
+            for i in range(len(boss)):
+                myCard.append(boss[i])
+            score *= int(f) * 2
         else:
-            i = 0
-            while i < len(c3):  # 遍历数组写入c2
-                if c3[i] == '1':
-                    if len(c3) == 1:
-                        c2.append('1')
-                    else:
-                        c2.append('10')
-                elif c3[i] == '0':
-                    if c3[i-1] == '1':
-                        pass
-                    else:
-                        c2.append('0')
-                elif c3[i] == 'I':
-                    c2.pop()
-                    c2.append('KING')
-                    i += 2
-                    bb += 1
-                    pass
-                elif c3[i] == 'S' and len(c3) > 1:
-                    c2.append('SMALL')
-                    i += 4
-                    bb += 1
-                    pass
+            for i in range(len(boss)):
+                enemyCard.append(boss[i])
+        # 开发人员模式
+        usrAns = input("此次是否开启DEV模式（无视牌出错限制）？")
+        flag = 0
+        isFinish = 0
+        isSee = 0
+        if usrAns != 'y' and 'Y' and 'yes' and 'YES':
+            flag = 1
+        if flag == 0:
+            print("开发人员模式已开启")
+            flag = 2
+            isFinish = 1
+            isSee = 1
+        sort(myCard)
+        while len(myCard) != 0 and len(enemyCard) != 0:
+            aa = 1
+            bb = 0
+            c2 = []  # c2存储字符串型列表（数组）
+            if d == 1:  # d判断是否是出牌时机
+                print(myCard)
+                if isSee == 1:
+                    print("ENEMY:")
+                    print(enemyCard)
+                # 输入牌到出牌组中
+                c3 = input("请出牌")
+                if c3 == '要不起':
+                    c2.append('要不起')
+                    # 特殊情况，无法用数字表示
+                elif c3 == 'Ter' or c3 == 'ter' and isFinish == 1:
+                    ki = 0
+                    break
+                    # 开启开发模式后可用立即终止出牌功能，以便测试特殊数据
                 else:
-                    c2.append(c3[i])
-                i += 1
-        # 判断牌是否出错
-        wrong(c3, c2, aa, flag)
-    enemyCard = sort(enemyCard)
-    d = 1
+                    i = 0
+                    while i < len(c3):  # 遍历数组写入c2
+                        if c3[i] == '1':
+                            if len(c3) == 1:
+                                c2.append('1')
+                            else:
+                                c2.append('10')
+                        elif c3[i] == '0':
+                            if c3[i-1] == '1':
+                                pass
+                            else:
+                                c2.append('0')
+                        elif c3[i] == 'I':
+                           c2.pop()
+                           c2.append('KING')
+                           i += 2
+                           bb += 1
+                           pass
+                        elif c3[i] == 'S' and len(c3) > 1:
+                            c2.append('SMALL')
+                            i += 4
+                            bb += 1
+                            pass
+                        else:
+                            c2.append(c3[i])
+                        i += 1
+                # 判断牌是否出错
+                wrong(c3, c2, aa, flag)
+                enemyCard = sort(enemyCard)
+                d = 1
+    if now == 'help':
+        print("该游戏由三人个玩一副牌，地主是一方，其余两家为另一方，双方对战，先出完的一方胜。"+"\n"
+        +"如叫牌，可为自己增加三张牌"+"\n"+"出牌时，牌的张数要与上家出牌张数相同，且牌的大小要大于上家出牌大小"+"\n"+"可以出三带一，炸弹")
+    elif now == 'about':
+        print("Release Date:1/31/2021"+"\n"+"Written by wbw"+"\n"+"Edition:Spring Second Edition(2.1.1)")
 
 # 最后输出谁胜利
 if len(myCard) == 0:
@@ -475,5 +496,4 @@ elif len(enemyCard) == 0:
     print('你输了')
 if flag1 == 0:
     score *= 10
-print(flag1)
 print('你的得分:' + str(score))
