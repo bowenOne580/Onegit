@@ -2,46 +2,22 @@
 #include<cstdio>
 #include<ctime> //用于产生随机数(系统时间随机)
 #include<cstring>
+#include<string>
 using namespace std;
 int cardNum[20] = {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1},lenOU,sumOU,Ou[105];
-int basket[105],Max = -1;
-string myCard[105],enemyCard[105],boss[8],cardStack[20] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A","SMALL","KING",};
+int basket[105],Max = -1,cntE[20],cntM[20],cntB[5],totM = 17,totE = 17;
+string cardStack[20] = {"3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2", "SMALL","KING",};
 int ifJiao = 0;
 void ran(){
     srand(time(0)); //保证每次的牌不一样
-    int num = 0,r,cnt[20] = {};
+    int num = 0,r;
     while (num!=37){
         r = rand()%15;
         if (cardNum[r] == 0) continue;
         cardNum[r]--;
-        cnt[r]++;
-        if (num == 16){
-            int tmp = -1;
-            for (int i=0;i<15;i++){
-                while (cnt[i]!=0){
-                    myCard[++tmp] = cardStack[i];
-                    cnt[i]--;
-                }
-            }
-        }
-        else if (num == 19){
-            int tmp = -1;
-            for (int i=0;i<15;i++){
-                while (cnt[i]!=0){
-                    boss[++tmp] = cardStack[i];
-                    cnt[i]--;
-                }
-            }
-        }
-        else if (num == 36){
-            int tmp = -1;
-            for (int i=0;i<15;i++){
-                while (cnt[i]!=0){
-                    enemyCard[++tmp] = cardStack[i];
-                    cnt[i]--;
-                }
-            }
-        }
+        if (num < 17) cntM[r]++;
+        if (num > 19) cntE[r]++;
+        if (num > 16 && num < 20) cntB[num-16] = r;
         num++;
     }
 }
@@ -54,48 +30,127 @@ int calc(){
         if (Max == 3) a = 4;
         if (Max == 4) a = 5;
     }
+    else if (lenOU == 5){
+        if (Max == 3) a = 6;
+        else a = 7;
+    }
+    else if (lenOU == 6){
+        if (Max == 2) a = 8;
+        else if (Max == 4) a = 9;
+        else a = 10;
+    }
+    else if (Ou[0] == -46) a = 11;
     else a = -1;
     return a;
 }
 void beat(){
-    int mode = calc();
+    int mode = calc(),canChu = 0;
     if (mode == 1){
-
+        for (int i=Ou[0]+1;i<15;i++){
+            if (cntE[i]>0){
+                cout<<cardStack[i]<<endl;
+                cntE[i]--;
+                totE--;
+                canChu = 1;
+                break;
+            }
+        }
     }
     else if (mode == 2){
-
+        for (int i=Ou[0]+1;i<15;i++){
+            if (cntE[i]>1){
+                cout<<cardStack[i]<<cardStack[i]<<endl;
+                cntE[i]-=2;
+                totE-=2;
+                canChu = 1;
+                break;
+            }
+        }
     }
     else if (mode == 3){
-
+        for (int i=Ou[0]+1;i<15;i++){
+            if (cntE[i]>2){
+                cout<<cardStack[i]<<cardStack[i]<<cardStack[i]<<endl;
+                cntE[i]-=3;
+                totE-=3;
+                canChu = 1;
+                break;
+            }
+        }
     }
     else if (mode == 4){
-
+        for (int i=Ou[0]+1;i<15;i++){
+            if (cntE[i]>2){
+                for (int j=0;j<15;j++){
+                    if (cntE[j]>0){
+                        cout<<cardStack[i]<<cardStack[i]<<cardStack[i]<<cardStack[j]<<endl;
+                        cntE[j]--;
+                        cntE[i]-=3;
+                        totE-=4;
+                        canChu = 1;
+                        break;
+                    }
+                }
+                break;
+            }
+        }
     }
     else if (mode == 5){
-
+        for (int i=Ou[0]+1;i<15;i++){
+            if (cntE[i]>3){
+                cout<<cardStack[i]<<cardStack[i]<<cardStack[i]<<cardStack[i]<<endl;
+                cntE[i]-=4;
+                totE-=4;
+                canChu = 1;
+                break;
+            }
+        }
+    }
+    else if (mode == 11){
+        for (int i=0;i<15;i++){
+            if (cntE[i]>0){
+                cout<<cardStack[i]<<endl;
+                cntE[i]--;
+                totE--;
+                canChu = 1;
+                break;
+            }
+        }
     }
     else{
-        cout<<"功能未完善或牌出错了";
+        cout<<"功能未完善或牌出错了"<<endl;
+        canChu = 1;
     }
+    if (canChu == 0) cout<<"要不起"<<endl;
 }
 void pre(){
     cout<<"叫地主吗:1.3分 2.2分 3.1分 4.不叫"<<endl;
     int iwant;
     cin>>iwant;
-    if (iwant>0){
-        for (int i=0;i<3;i++){
-            myCard[i+17] = boss[i];
+    if (iwant != 4) for (int i=0;i<3;i++){
+        cntM[cntB[i]]++;
+        totM++;
+    }
+    else for (int i=0;i<3;i++){
+        cntE[cntB[i]]++;
+        totE++;
+    }
+    for (int i=0;i<15;i++){
+        int k = 0;
+        while (k<cntM[i]){
+            cout<<cardStack[i]<<" ";
+            k++;
         }
     }
-    else{
-        for (int i=0;i<3;i++){
-            enemyCard[i+17] = boss[i];
-        }
-    }
+    cout<<endl;
 }
 void ingame(){
-    for (int i=0;i<17;i++){
-        cout<<myCard[i]<<" ";
+    for (int i=0;i<15;i++){
+        int k = 0;
+        while (k<cntM[i]){
+            cout<<cardStack[i]<<" ";
+            k++;
+        }
     }
     cout<<endl;
     if (ifJiao == 0){
@@ -104,26 +159,58 @@ void ingame(){
     }
     char ou[105];
     scanf("%s",&ou);
+    if (ou[0] == -46){
+        Ou[0] = -46;
+        beat();
+        return;
+    }
     lenOU = strlen(ou);
-    int size = 0;
-    for (int i=0;i<lenOU;i++){
-        if (ou[i] >= '1' && ou[i] <= '9'){
-            if (ou[i] == 2){
-                Ou[++size] = 16;
+    int size = -1,fakeLen = lenOU,tag;
+    for (int i=0;i<fakeLen;i++){
+        tag = -1;
+        if (ou[i] > '1' && ou[i] <= '9'){
+            if (ou[i] == '2'){
+                Ou[++size] = 12;
             }
             else{
-                Ou[++size] = ou[i] - '0';
+                Ou[++size] = ou[i] - '0' - 3;
             }
         }
-        else if (ou[i] == 'J') Ou[++size] = 11;
-        else if (ou[i] == 'Q') Ou[++size] = 12;
-        else if (ou[i] == 'K') Ou[++size] = 13;
-        else if (ou[i] == 'A') Ou[++size] = 14;
-        else if (ou[i] == 'I') Ou[size] = 18; //对应KING
-        else if (ou[i] == 'S') Ou[++size] = 17;
-        else if (ou[i] == '0') Ou[size] = 10;
-        basket[ou[size]] += 1;
-        if (basket[ou[size]] > Max) Max = basket[ou[size]];
+        else if (ou[i] == 'J') Ou[++size] = 8;
+        else if (ou[i] == 'Q') Ou[++size] = 9;
+        else if (ou[i] == 'K'){
+            if (i!=fakeLen-1){
+                if (ou[i+1] == 'I'){
+                    Ou[++size] = 14;
+                    lenOU -= 3;
+                    tag = 1;
+                    i += 3;
+                }
+                else Ou[++size] = 10;
+            }
+            else Ou[++size] = 10;
+        }
+        else if (ou[i] == 'A') Ou[++size] = 11;
+        else if (ou[i] == 'S'){
+            Ou[++size] = 13; //对应SMALL
+            lenOU -= 4;
+            i += 4;
+        }
+        else if (ou[i] == '1'){
+            Ou[++size] = 7; //对应10
+            lenOU -= 1;
+            i += 1;
+        }
+        if (tag == 1){
+            basket[13] += 1;
+            if (basket[13] > Max) Max = basket[13];
+        }
+        else{
+            basket[Ou[size]] += 1; // 负责计算最大相同数
+            if (basket[Ou[size]] > Max) Max = basket[Ou[size]]; //需要将KING和SMALL包含进去
+        }
+        cntM[Ou[size]]--;
+        totM--;
     }
     beat();
 }
@@ -140,7 +227,7 @@ void hel(){
     cout<<endl;
 }
 void about(){
-    cout<<"Release Date:2/28/2021"<<endl;
+    cout<<"Release Date:4/11/2021"<<endl;
     cout<<"C++ Experimental Beta"<<endl;
     cout<<"此为C++测试版，尚未开发完毕，仅作调试与展示之用"<<endl;
     cout<<endl;
@@ -151,7 +238,8 @@ void runPro(){
     int uc;
     cin>>uc;
     if (uc == 1){
-        ingame();
+        ran(); //发牌和排序函数
+        while (totM > 0 && totE > 0) ingame();
         runPro();
     }
     else if (uc == 2) {
@@ -165,8 +253,6 @@ void runPro(){
     else return;
 }
 int main(){
-    ran(); //发牌和排序函数
-    //以下为执行部分
     runPro();
     return 0;
 }
