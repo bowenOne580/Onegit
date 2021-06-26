@@ -10,15 +10,15 @@ using namespace std;
 int cardNum[20] = {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1},lenOU,sumOU,Ou[105];
 int Max,cntE[20],cntM[20],cntB[5],totM = 17,totE = 17,mode,lMode,boKing,sco = 100,hisco = 0;
 int lChu[100],lSize,ifChun = 1,lLen,lang = 1,ifGod,dif = 2,ifJiao = 0,win,lose;
-int chun,lenColl[20],maxPage = 5,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],oppor;
+int chun,lenColl[20],maxPage = 6,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],oppor,speGame;
 int haDou,haSin;
-char edi = 'n';
+char edi = 's';
 long long money = 3000;
 string cardStack[20] = {"3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2", "SMALL","KING",};
-string achCNStack[25] = {"","春天到了","第一场胜仗","常胜将军","无坚不摧","胜败乃兵家常事","即生瑜，何生亮","小康","富翁","富可敌国","富到无法用int衡量","负翁","金融危机","濒临破产","从头开始","春意盎然","斗地主一岁了!","E32021特别庆祝"};
-string achENStack[25] = {"","The East Wind is coming","First Victory!","It's a piece of cake","A winner of all times","It's easy to fail than success","Is the robot smarter than me?","Can afford!","Billionare","Richer than America(Not China)","Can't be measured by int","Rich in abs","Financial crysis","Get close to break","Start again!","You can touch the spring in the air","I am 1 year old!","Special Celebration for E32021"};
-string descripCN[25] = {"","达成1局春天","获得1场胜利","获得10场胜利","获得50场胜利","被打败5次","被打败20次","总点数超过10000","总点数超过30000","总点数超过500000","总点数超过2147480000","总点数低于-10000","总点数低于-50000","总点数低于-1000000","点数过低，重置程序","完成20次春天","在一周年庆版本中完成5局游戏","在E3特别版中完成1局游戏"};
-string descripEN[25] = {"","Do Spring in 1 game","Win for the first time","Win for 10 times","Win for 50 times","Be beaten for 5 times","Be beaten for 20 times","Get 10000 credits","Get 30000 credits","Get 500000 credits","Get 2147480000 credits","Lower than -10000 credits","Lower than -50000 credits","Lower than -1000000 credits","Credits are getting too low, so that I have to reset it for you","Finish 20 Springs","Finish 5 games in the 1st Anniversary Edition","Finish only one game in E3 Special Edition"};
+string achCNStack[25] = {"","春天到了","第一场胜仗","常胜将军","无坚不摧","胜败乃兵家常事","即生瑜，何生亮","小康","富翁","富可敌国","富到无法用int衡量","负翁","金融危机","濒临破产","从头开始","春意盎然","斗地主一岁了!","E32021特别庆祝","剁手快乐"};
+string achENStack[25] = {"","The East Wind is coming","First Victory!","It's a piece of cake","A winner of all times","It's easy to fail than success","Is the robot smarter than me?","Can afford!","Billionare","Richer than America(Not China)","Can't be measured by int","Rich in abs","Financial crysis","Get close to break","Start again!","You can touch the spring in the air","I am 1 year old!","Special Celebration for E32021","Happy Shopping on Steam Summer Sale 2021!"};
+string descripCN[25] = {"","达成1局春天","获得1场胜利","获得10场胜利","获得50场胜利","被打败5次","被打败20次","总点数超过10000","总点数超过30000","总点数超过500000","总点数超过2147480000","总点数低于-10000","总点数低于-50000","总点数低于-1000000","点数过低，重置程序","完成20次春天","在一周年庆版本中完成5局游戏","在E3特别版中完成1局游戏","在夏促特别版中完成10局游戏"};
+string descripEN[25] = {"","Do Spring in 1 game","Win for the first time","Win for 10 times","Win for 50 times","Be beaten for 5 times","Be beaten for 20 times","Get 10000 credits","Get 30000 credits","Get 500000 credits","Get 2147480000 credits","Lower than -10000 credits","Lower than -50000 credits","Lower than -1000000 credits","Credits are getting too low, so that I have to reset it for you","Finish 20 Springs","Finish 5 games in the 1st Anniversary Edition","Finish only one game in E3 Special Edition","Finish 10 games in Steam Summer Sale Special Edition"};
 string achMonCN[20] = {"元","二","三","四","五","六","七","八","九","十","十一","十二"};
 string achMonEN[20] = {"January","Febrary","March","April","May","June","July","August","September","October","November","December"};
 struct acheivement{
@@ -40,10 +40,12 @@ void readVars(){
     scanf("%d",&win);
     scanf("%d",&lose);
     scanf("%d",&dif);
-    for (int i=1;i<=20;i++){ //已使用17个
+    for (int i=1;i<=20;i++){ //已使用18个
         scanf("%d%d",&ach[i].ifGet,&ach[i].day);
         cin>>ach[i].mon>>ach[i].yr;
     }
+    scanf("%d",&speGame);
+    if (edi == 'n') speGame = 0;
     freopen("CON", "r", stdin);
     freopen("CON", "w", stdout);
 }
@@ -60,6 +62,7 @@ void writeVars(){
         printf("%d %d ",ach[i].ifGet,ach[i].day);
         cout<<ach[i].mon<<" "<<ach[i].yr<<endl;
     }
+    printf("%d\n",speGame);
     freopen("CON", "r", stdin);
     freopen("CON", "w", stdout);
 }
@@ -127,7 +130,7 @@ int calc(){
             if (lenColl[2] == 1) a = 6;
             else a = -1;
         }
-        else if (Max == 1) a = 7;
+        else if (Max == 1 && lenOU+Ou[0]<13) a = 7;
         else a = -1;
     }
     else if (lenOU == 6){
@@ -139,15 +142,16 @@ int calc(){
             if (lenColl[3] == 2) a = 9;
             else a = -1;
         }
-        else if (Max == 4){
-            if (lenColl[2] == 1) a = 10;
-            else a = -1;
-        }
-        else if (Max == 1) a = 7;
+        else if (Max == 4) a = 10;
+        else if (Max == 1 && lenOU+Ou[0]<13) a = 7;
         else a = -1;
     }
     else if (lenOU == 8){
-        if (Max == 3){
+        if (Max == 4){
+            if (lenColl[2] == 2) a = 10;
+            else a = -1;
+        }
+        else if (Max == 3){
             if (lenColl[3] == 2) a = 12;
             else a = -1;
         }
@@ -155,7 +159,7 @@ int calc(){
             if (lenColl[2] == 4) a = 8;
             else a = -1;
         }
-        else if (Max == 1) a = 7;
+        else if (Max == 1 && lenOU+Ou[0]<13) a = 7;
         else a = -1;
     }
     else if (lenOU == 10){
@@ -167,6 +171,7 @@ int calc(){
             if (lenColl[2] == 5) a = 8;
             else a = -1;
         }
+        else if (Max == 1 && lenOU+Ou[0]<13) a = 7;
         else a = -1;
     }
     else if (lenOU > 6 && Max == 1) a = 7;
@@ -511,6 +516,9 @@ void initBeat(){
     kingsman[0] = 0;
     haDou = 0;
     haSin = 0;
+    oppor = 0;
+    oppor+=cntE[12];
+    useful[12]+=4;
     if (cntE[13] == 1 && cntE[14] == 1){
         kingsman[0] = 1; //对王判断
         oppor+=4;
@@ -518,7 +526,7 @@ void initBeat(){
     for (int i=0;i<13;i++){ //去王优化
         if (cntE[i]>3){
             bomb[i] = 1;
-            useful[i]+=4;
+            useful[i]+=7;
             oppor+=3;
         }
         if (cntE[i]>2){
@@ -529,7 +537,7 @@ void initBeat(){
         if (cntE[i]>1) doub++;
         else{
             if (doub>=3){
-                for (int j=i-doub+1;j<=i;j++){
+                for (int j=i-doub;j<=i-1;j++){
                     dou[j] = 1;
                     useful[j]+=2;
                 }
@@ -541,7 +549,7 @@ void initBeat(){
         if (cntE[i] >= 1) sig++;
         else{
             if (sig>=5){
-                for (int j=i-sig+1;j<=i;j++){
+                for (int j=i-sig;j<=i-1;j++){
                     si[j] = 1;
                     useful[j]++;
                 }
@@ -591,10 +599,13 @@ void selfOut(){
                         if (p!=-1){
                             sco*=3;
                             if (i>j) swap(i,j);
-                            if (k>p) swap(k,p);
+                            if (k>p){
+                                swap(k,p);
+                                cntE[k]-=2;
+                            }
+                            else cntE[p]-=2;
                             cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[k]<<" "<<cardStack[k]<<" "<<cardStack[p]<<" "<<cardStack[p]<<endl;
                             lChu[++lSize] = i;
-                            cntE[p]-=2;
                             totE-=10;
                             lMode = 13;
                             j = 12;
@@ -622,10 +633,13 @@ void selfOut(){
                         if (p!=-1){
                             sco*=2;
                             if (i>j) swap(i,j);
-                            if (k>p) swap(k,p);
+                            if (k>p){
+                                swap(k,p);
+                                cntE[k]--;
+                            }
+                            else cntE[p]--;
                             cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[k]<<" "<<cardStack[p]<<endl;
                             lChu[++lSize] = i;
-                            cntE[p]--;
                             totE-=8;
                             lMode = 12;
                             j = 12;
@@ -646,10 +660,13 @@ void selfOut(){
                 int j = weigh(0,12,3);
                 if (j!=-1){
                     sco*=2;
-                    if (i>j) swap(i,j);
+                    if (i>j){
+                        swap(i,j);
+                        cntE[i]-=3;
+                    }
+                    else cntE[j]-=3;
                     cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[j]<<endl;
                     lChu[++lSize] = i;
-                    cntE[j]-=3;
                     totE-=6;
                     j = 12;
                     i = 12;
@@ -674,7 +691,7 @@ void selfOut(){
                 }
                 else cntE[i]+=3;
             }
-            lLen-=2;
+            lLen = 3;
         }
         else if (cntS>=1){
             int i = weigh(0,12,3);
@@ -690,7 +707,7 @@ void selfOut(){
                 }
                 else cntE[i]+=3;
             }
-            lLen--;
+            lLen = 3;
         }
         else{
             int i = weigh(0,12,3);
@@ -728,6 +745,7 @@ void selfOut(){
             lMode = 8;
             lChu[++lSize] = mpos;
             cout<<endl;
+            lLen = Max*2;
         }
         else if (haSin == 1){
             int cnt = 0,Max = -1,mpos = -1;
@@ -745,7 +763,7 @@ void selfOut(){
                     }
                 }
             }
-            for (int i=mpos;i<=mpos+Max-1;i++){
+            for (int i=mpos;i<=mpos+Max-2;i++){
                 cout<<cardStack[i]<<" ";
                 cntE[i]--;
                 totE--;
@@ -753,6 +771,7 @@ void selfOut(){
             lChu[++lSize] = mpos;
             lMode = 7;
             cout<<endl;
+            lLen = Max;
         }
         else{
             //此处还需增加自己只剩一张与两张的特判
@@ -867,10 +886,10 @@ void beat2(){
                 cntSi = 0;
                 for (int j=i;j<=i+lenOU-1;j++){
                     cntSi+=useful[i];
-                    if (cntSi<Min){
-                        Min = cntSi;
-                        mpos = i;
-                    }
+                }
+                if (cntSi<Min){
+                    Min = cntSi;
+                    mpos = i;
                 }
             }
         }
@@ -892,10 +911,11 @@ void beat2(){
                 cntDo = 0;
                 for (int j=i;j<=i+lenOU-1;j++){
                     cntDo+=useful[i];
-                    if (cntDo<Min){
-                        Min = cntDo;
-                        mpos = i;
-                    }
+                }
+                if (cntDo<Min){
+                    Min = cntDo;
+                    mpos = i;
+                    cout<<cardStack[mpos]<<endl;
                 }
             }
         }
@@ -934,15 +954,24 @@ void beat2(){
         int i = weigh(Ou[0]+1,12,4);
         if (i!=-1){
             cntE[i]-=4;
-            int j = weigh(0,12,2);
+            int j = weigh(0,12,1);
+            cntE[j]--;
             if (j!=-1){
-                cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<endl;
-                lChu[++lSize] = i;
-                cntE[j]-=2;
-                totE-=6;
-                canChu = 1;
-                j = 12;
-                i = 12;
+                int k = weigh(0,12,1);
+                if (k!=-1){
+                    if (j>k){
+                        swap(j,k);
+                        cntE[j]--;
+                    }
+                    else cntE[k]--;
+                    cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[k]<<endl;
+                    lChu[++lSize] = i;
+                    totE-=6;
+                    canChu = 1;
+                    j = 12;
+                    i = 12;
+                }
+                else cntE[j]++;
             }
             else cntE[i]+=4;
         }
@@ -1270,6 +1299,10 @@ void ingame(){
                 lenOU -= 1;
                 i += 1;
             }
+            else{
+                Cuo = 1;
+                break;
+            }
         }
         else{
             Cuo = 1;
@@ -1312,7 +1345,7 @@ void ingame(){
     if (ifGod) Cuo = 0;
     if (Cuo == 1){
         for (int i=size;i>=0;i--){
-            cntM[Ou[size--]]++;
+            cntM[Ou[i--]]++;
             totM++;
         }
         if (lang == 1) printf("牌出错了\n");
@@ -1380,10 +1413,10 @@ void hel(){
     return;
 }
 void about(){
-    if (lang == 1) printf("发行日期: 6/24/2021\n");
-    else if (lang == 2) printf("Release Date: 6/24/2021\n");
-    if (lang == 1) printf("版本号: 2.2.0\n");
-    else if (lang == 2) printf("Ver: 2.2.0\n");
+    if (lang == 1) printf("发行日期: 6/26/2021\n");
+    else if (lang == 2) printf("Release Date: 6/26/2021\n");
+    if (lang == 1) printf("版本号: 2.2.2\n");
+    else if (lang == 2) printf("Ver: 2.2.2\n");
     if (lang == 1) printf("此为C++正式版，大部分功能已可用，可能有少量bug\n");
     else if (lang == 2) printf("C++ stable channel, most features are available, might has a few bugs\n");
     if (lang == 1) printf("按任意键以返回\n");
@@ -1398,7 +1431,7 @@ void acheive(){
     if (lang == 1) printf("你已达成的成就:\n");
     else if (lang == 2) printf("The achievements you have reached\n");
     int f = 0;
-    for (int i=1;i<=17;i++){
+    for (int i=1;i<=18;i++){
         if (ach[i].ifGet == 1){
             if (lang == 1) cout<<achCNStack[i]<<endl;
             else if (lang == 2) cout<<achENStack[i]<<endl;
@@ -1432,7 +1465,7 @@ void acheive(){
     printf("\n");
     if (lang == 1) printf("未解锁的成就:\n");
     else if (lang == 2) printf("Locked Achievements:\n");
-    for (int i=1;i<=17;i++){
+    for (int i=1;i<=18;i++){
         if (ach[i].ifGet == 0){
             if (lang == 1) cout<<achCNStack[i]<<endl<<"解锁条件: "<<descripCN[i]<<endl<<endl;
             else if (lang == 2) cout<<achENStack[i]<<endl<<"Unlock Way: "<<descripEN[i]<<endl<<endl;
@@ -1532,8 +1565,9 @@ void checkach(){
             hisco = 0;
         }
         if (ifChun == 1 && ach[15].ifGet == 0 && chun==20) markAch(15);
-        if (edi == 'a' && ach[16].ifGet == 0 && win+lose == 5) markAch(16);
+        if (edi == 'a' && ach[16].ifGet == 0 && speGame==5) markAch(16);
         if (edi == 'e' && ach[17].ifGet == 0) markAch(17);
+        if (edi == 's' && ach[18].ifGet == 0 && speGame==10) markAch(18);
 }
 void stat(){
     if (lang == 1) printf("你的总点数: %lld\n",money);
@@ -1650,9 +1684,15 @@ void nbdata(int i){
         if (lang == 1) printf("重大版本更新:出牌系统升级\n这也就意味着机器人将能辨别出牌的优劣，选择简单且适合的策略！\n但是，几乎每一次重大更新，都伴随着大大小小的bug，增强型出牌方式仅供测试，如有问题，还请谅解。\n如果你真的碰到了问题，请查看支持界面。\n");
         else if (lang == 2) printf("Major Update: Upgrade The Card-Putting System\nThis means the Rival can now tell the difference among some strategies!\nBut, unfrotunately, there are many bugs in this enhanced system.\nIf you come across some unexpected errors, please go to the Support page on start-up.\n");
     }
+    else if (i == 6){
+        if (lang == 1) printf("发布时间:2021.6.24 23:12\n");
+        else if (lang == 2) printf("Post Time:6/24/2021 23:12\n");
+        if (lang == 1) printf("Steam夏促将于6.25日开始！\n特别活动已上线，新的成就将能获取，祝各位剁手快乐！\n25日 16:24更新：夏促界面https://store.steampowered.com/ 力度貌似不是很大，但还是有很多值得购买的\n");
+        else if (lang == 2) printf("The Steam Summer Sale 2021 is starting on June 25!\nSpecial event is open now, new achievement is added, happy shopping everybody!\nUpdate on 6/25 16:24 Sale Pagehttps://store.steampowered.com/ Not much, but you can still find good games with delicious discount to buy\n");
+    }
 }
 void notboard(){
-    int uc = 1,page = 5,ifRead = 1;
+    int uc = 1,page = 6,ifRead = 1;
     while (uc!=3){
         if (ifRead) nbdata(page);
         printf("\n");
@@ -1734,6 +1774,7 @@ void runPro(){
             if (lang == 1) printf("你还有%lld点\n\n",money);
             else if (lang == 2) printf("You have %lld points\n\n",money);
         }
+        if (edi!='n') speGame++;
         checkach();
         printf("\n");
         Clear();
