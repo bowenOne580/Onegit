@@ -5,20 +5,34 @@
 #include<string>
 #include<cmath>
 #include<conio.h>
+#include<cstdlib>
 #include<bits/stdc++.h>
 using namespace std;
 int cardNum[20] = {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1},lenOU,sumOU,Ou[105];
 int Max,cntE[20],cntM[20],cntB[5],totM = 17,totE = 17,mode,lMode,boKing,sco = 100,hisco = 0;
 int lChu[100],lSize,ifChun = 1,lLen,lang = 1,ifGod,dif = 2,ifJiao = 0,win,lose;
 int chun,lenColl[20],maxPage = 7,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],oppor,speGame;
-int haDou,haSin,plaType = 1,calcThree[20];
-char edi = 'g';
+int haDou,haSin,plaType = 1,calcThree[20],termi,usercho,rating;
+char edi = 'n';
 long long money = 3000;
 string cardStack[20] = {"3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2", "SMALL","KING",};
-string achCNStack[25] = {"","春天到了","第一场胜仗","常胜将军","无坚不摧","胜败乃兵家常事","即生瑜，何生亮","小康","富翁","富可敌国","富到无法用int衡量","负翁","金融危机","濒临破产","从头开始","春意盎然","斗地主一岁了!","E32021特别庆祝","剁手快乐"};
-string achENStack[25] = {"","The East Wind is coming","First Victory!","It's a piece of cake","A winner of all times","It's easy to fail than success","Is the robot smarter than me?","Can afford!","Billionare","Richer than America(Not China)","Can't be measured by int","Rich in abs","Financial crysis","Get close to break","Start again!","You can touch the spring in the air","I am 1 year old!","Special Celebration for E32021","Happy Shopping on Steam Summer Sale 2021!"};
-string descripCN[25] = {"","达成1局春天","获得1场胜利","获得10场胜利","获得50场胜利","被打败5次","被打败20次","总点数超过10000","总点数超过30000","总点数超过500000","总点数超过2147480000","总点数低于-10000","总点数低于-50000","总点数低于-1000000","点数过低，重置程序","完成20次春天","在一周年庆版本中完成5局游戏","在E3特别版中完成1局游戏","在夏促特别版中完成10局游戏"};
-string descripEN[25] = {"","Do Spring in 1 game","Win for the first time","Win for 10 times","Win for 50 times","Be beaten for 5 times","Be beaten for 20 times","Get 10000 credits","Get 30000 credits","Get 500000 credits","Get 2147480000 credits","Lower than -10000 credits","Lower than -50000 credits","Lower than -1000000 credits","Credits are getting too low, so that I have to reset it for you","Finish 20 Springs","Finish 5 games in the 1st Anniversary Edition","Finish only one game in E3 Special Edition","Finish 10 games in Steam Summer Sale Special Edition"};
+string achCNStack[25] = {
+    "","春天到了","第一场胜仗","常胜将军","无坚不摧","胜败乃兵家常事","即生瑜，何生亮","小康","富翁","富可敌国",
+    "富到无法用int衡量","负翁","金融危机","濒临破产","从头开始","春意盎然","斗地主一岁了!","E32021特别庆祝","剁手快乐"};
+string achENStack[25] = {
+    "","The East Wind is coming","First Victory!","It's a piece of cake","A winner of all times",
+    "It's easy to fail than success","Is the robot smarter than me?","Can afford!","Billionare","Richer than America(Not China)",
+    "Can't be measured by int","Rich in abs","Financial crysis","Get close to break","Start again!","You can touch the spring in the air",
+    "I am 1 year old!","Special Celebration for E32021","Happy Shopping on Steam Summer Sale 2021!"};
+string descripCN[25] = {
+    "","达成1局春天","获得1场胜利","获得10场胜利","获得50场胜利","被打败5次","被打败20次","总点数超过10000","总点数超过30000","总点数超过500000",
+    "总点数超过2147480000","总点数低于-10000","总点数低于-50000","总点数低于-1000000","点数过低，重置程序","完成20次春天","在一周年庆版本中完成5局游戏",
+    "在E3特别版中完成1局游戏","在夏促特别版中完成10局游戏"};
+string descripEN[25] = {
+    "","Do Spring in 1 game","Win for the first time","Win for 10 times","Win for 50 times","Be beaten for 5 times","Be beaten for 20 times",
+    "Get 10000 credits","Get 30000 credits","Get 500000 credits","Get 2147480000 credits","Lower than -10000 credits","Lower than -50000 credits",
+    "Lower than -1000000 credits","Credits are getting too low, so that I have to reset it for you","Finish 20 Springs",
+    "Finish 5 games in the 1st Anniversary Edition","Finish only one game in E3 Special Edition","Finish 10 games in Steam Summer Sale Special Edition"};
 string achMonCN[20] = {"元","二","三","四","五","六","七","八","九","十","十一","十二"};
 string achMonEN[20] = {"January","Febrary","March","April","May","June","July","August","September","October","November","December"};
 struct acheivement{
@@ -29,44 +43,24 @@ struct acheivement{
 };
 acheivement ach[1005];
 void readVars(){
-    bool a = freopen("score.txt","r",stdin);
-    if (!a){
-        return;
-    }
-    scanf("%lld",&money);
-    scanf("%d",&hisco);
-    scanf("%d",&lang);
-    scanf("%d",&ifGod);
-    scanf("%d",&win);
-    scanf("%d",&lose);
-    scanf("%d",&dif);
+    ifstream input("data.txt");
+    input>>money>>hisco>>ifGod>>win>>lose>>dif;
     for (int i=1;i<=20;i++){ //已使用18个
-        scanf("%d%d",&ach[i].ifGet,&ach[i].day);
-        cin>>ach[i].mon>>ach[i].yr;
+        input>>ach[i].ifGet>>ach[i].day>>ach[i].mon>>ach[i].yr;
     }
-    scanf("%d",&speGame);
-    scanf("%d",&plaType);
+    input>>speGame>>plaType>>rating;
     if (edi == 'n') speGame = 0;
-    freopen("CON", "r", stdin);
-    freopen("CON", "w", stdout);
+    input.close();
 }
 void writeVars(){
-    freopen("score.txt","w",stdout);
-    printf("%lld\n",money);
-    printf("%d\n",hisco);
-    printf("%d\n",lang);
-    printf("%d\n",ifGod);
-    printf("%d\n",win);
-    printf("%d\n",lose);
-    printf("%d\n",dif);
+    ofstream output;
+    output.open("data.txt");
+    output<<money<<endl<<hisco<<endl<<lang<<endl<<ifGod<<endl<<win<<endl<<lose<<endl<<dif<<endl;
     for (int i=1;i<=20;i++){
-        printf("%d %d ",ach[i].ifGet,ach[i].day);
-        cout<<ach[i].mon<<" "<<ach[i].yr<<endl;
+        output<<ach[i].ifGet<<" "<<ach[i].day<<" "<<ach[i].mon<<" "<<ach[i].yr<<endl;
     }
-    printf("%d\n",speGame);
-    printf("%d\n",plaType);
-    freopen("CON", "r", stdin);
-    freopen("CON", "w", stdout);
+    output<<speGame<<endl<<plaType<<endl<<rating<<endl;
+    output.close();
 }
 void Clear(){
 	for (int i=0;i<15;i++){
@@ -89,32 +83,36 @@ void Clear(){
     lMode = 0;
     sco = 100;
     ifChun = 1;
+    termi = 0; //初始化变量
 }
 void Back(){
     money = 3000;
     hisco = 0;
     win = 0;
     lose = 0;
-    for (int i=1;i<=20;i++){
-        ach[i].ifGet = 0;
-    }
+    rating = 0;
+    for (int i=1;i<=20;i++) ach[i].ifGet = 0;
+}
+void nextPage(){
+    char uc[10];
+    gets(uc);
+    cin.getline(uc,10);
+    system("cls");
 }
 void ran(){
-    srand(time(0)); //保证每次的牌不一样
+    srand(time(0));
     int num = 0,r;
     while (num!=37){
         r = rand()%15;
         if (cardNum[r] == 0) continue;
         cardNum[r]--;
-        if (num < 17) cntE[r]++;
-        if (num > 19){
-            cntM[r]++;
-        }
+        if (num < 17) cntM[r]++;
+        if (num > 19) cntE[r]++;
         if (num > 16 && num < 20) cntB[num-17] = r;
         num++;
     }
 }
-int calc(){
+int calc(){ //未优化
     int a;
     if (lenOU == 1) a = 1;
     else if (lenOU == 2 && Max == 2){
@@ -187,7 +185,7 @@ int calc(){
     if (lenColl[3]>=3) a = 14;
     return a;
 }
-int Save(){
+int Save(){ //未优化
     int Good = 0;
     int i = 0;
     if (mode == 5) i = Ou[0]+1;
@@ -514,7 +512,7 @@ void beat(){
     }
     else ifChun++;
 }
-void initBeat(){
+void initBeat(){ //未优化
     int doub = 0,sig = 0;
     memset(si,0,sizeof(si));
     memset(dou,0,sizeof(dou));
@@ -568,7 +566,7 @@ void initBeat(){
         }
     }
 }
-int weigh(int left,int right,int length){
+int weigh(int left,int right,int length){ //未优化
     int Min = 0x7fffffff,mpos = -1;
     if (length == 6){
         for (int i=left;i<=right;i++){
@@ -588,7 +586,7 @@ int weigh(int left,int right,int length){
     }
     return mpos;
 }
-void selfOut(){
+void selfOut(){ //未优化
     int cntT = 0,cntD = 0,cntS = 0,flag = 2;
     for (int i=0;i<13;i++){
         if (cntE[i]>=3){
@@ -835,7 +833,7 @@ void selfOut(){
         }
     }
 }
-void beat2(){
+void beat2(){ //急需优化
     int canChu = 0;
     lLen = lenOU;
     lSize = -1;
@@ -1126,44 +1124,36 @@ void pre(){
     int who = 0;
     if (lang == 1) printf("叫地主吗？: 1.3分 2.2分 3.1分 4.不叫\n");
     else if (lang == 2) printf("Want to be the landlord?: 1.Very 2.Fine 3.Maybe 4.Definitely Not\n");
-    int iwant;
-    scanf("%d",&iwant);
-    if (iwant == 10){
+    char iwant;
+    scanf("%s",&iwant);
+    system("cls");
+    if (iwant == 't' || iwant == 'T'){
         totM = 0;
+        termi = 1;
         return;
     }
+    iwant = iwant-'0';
     if (iwant == 1){
         if (lang == 1) printf("你叫到了地主!\n");
         else if (lang == 2) printf("You are the Landlord now!\n");
-        for (int i=0;i<3;i++) cntM[cntB[i]]++;
-    	totM += 3;
-        sco*=(4-iwant);
     }
     else if (iwant != 4){
         if (oppor>=6){
             if (lang == 1) printf("对手叫3分，抢地主\n");
             else if (lang == 2) printf("The Rival has a strong wish to be the landlord.\n");
-            for (int i=0;i<3;i++) cntE[cntB[i]]++;
-    	    totE += 3;
-            ifChun--;
             sco*=3;
             who = 1;
         }
         else if (oppor>=4 && iwant == 3){
             if (lang == 1) printf("对手叫2分，抢地主\n你要抢吗？ 1.3分 2.不叫\n");
             else if (lang == 2) printf("The Rival want to get this position\nAre you going to fight for this? 1.Yes 2.Not interested\n");
-            scanf("%d",&iwant);
+            scanf("%s",&iwant);
+            iwant = iwant - '0';
             if (iwant == 1){
                 if (lang == 1) printf("你叫到了地主!\n");
                 else if (lang == 2) printf("You are the Landlord now!\n");
-                for (int i=0;i<3;i++) cntM[cntB[i]]++;
-    	        totM += 3;
-                sco*=(4-iwant);
             }
             else{
-                for (int i=0;i<3;i++) cntE[cntB[i]]++;
-    	        totE += 3;
-                ifChun--;
                 sco*=2;
                 who = 1;
             }
@@ -1171,66 +1161,49 @@ void pre(){
         else if (oppor<4){
             if (lang == 1) printf("你叫到了地主!\n");
             else if (lang == 2) printf("You are the Landlord now!\n");
-            for (int i=0;i<3;i++) cntM[cntB[i]]++;
-    	    totM += 3;
-            sco*=(4-iwant);
         }
 	}
     else{
     	if (oppor>=6){
             if (lang == 1) printf("对手叫3分\n");
             else if (lang == 2) printf("The Rival has a strong wish to be the landlord.\n");
+            sco*=3;
         }
         else if (oppor>=4){
             if (lang == 1) printf("对手叫2分\n");
             else if (lang == 2) printf("The Rival is interested in this position.\n");
+            sco*=2;
         }
         else{
             if (lang == 1) printf("对手叫1分\n");
             else if (lang == 2) printf("The Rival gives it a go\n");
+            sco*=1;
         }
+        who = 1;
+	}
+    if (who == 0){
+        for (int i = 0;i < 3;i++) cntM[cntB[i]]++;
+    	totM += 3;
+        sco *= (4-iwant);
+    }
+    else if (who == 1){
         for (int i=0;i<3;i++) cntE[cntB[i]]++;
     	totE += 3;
         ifChun--;
-        who = 1;
-	}
-    if (lang == 1) cout<<"地主牌是: "<<cardStack[cntB[0]]<<" "<<cardStack[cntB[1]]<<" "<<cardStack[cntB[2]]<<endl;
-    else if (lang == 2) cout<<"Special Cards for The Landlord: "<<cardStack[cntB[0]]<<" "<<cardStack[cntB[1]]<<" "<<cardStack[cntB[2]]<<endl;
-    printf("\n");
+    }
+    if (lang == 1) cout<<"地主牌是: "<<cardStack[cntB[0]]<<" "<<cardStack[cntB[1]]<<" "<<cardStack[cntB[2]];
+    else if (lang == 2) cout<<"Special Cards for The Landlord: "<<cardStack[cntB[0]]<<" "<<cardStack[cntB[1]]<<" "<<cardStack[cntB[2]];
+    printf("\n\n");
     if (lang == 1) printf("你的牌: ");
     else if (lang == 2) printf("Your Cards: ");
-    for (int i=0;i<15;i++){
-        int k = 0;
-        while (k<cntM[i]){
-            cout<<cardStack[i]<<" ";
-            k++;
-        }
-    }
+    for (int i=0;i<15;i++) for (int j=0;j<cntM[i];j++) cout<<cardStack[i]<<" ";
     if (lang == 1) printf("\n对手牌数: %d\n",totE);
     else if (lang == 2) printf("\nRival has %d cards\n",totE);
     if (ifGod == 1){
-        if (lang == 1){
-            printf("对手的牌: ");
-            for (int i=0;i<15;i++){
-                int k = 0;
-                while (k<cntE[i]){
-                    cout<<cardStack[i]<<" ";
-                    k++;
-                }
-            }
-            printf("\n");
-        }
-        else if (lang == 2){
-            printf("Rival's Cards: ");
-            for (int i=0;i<15;i++){
-                int k = 0;
-                while (k<cntE[i]){
-                    cout<<cardStack[i]<<" ";
-                    k++;
-                }
-            }
-            printf("\n");
-        }
+        if (lang == 1) printf("对手的牌: ");
+        else if (lang == 2) printf("Rival's Cards: ");
+        for (int i=0;i<15;i++) for (int j=0;j<cntM[i];j++) cout<<cardStack[i]<<" ";
+        printf("\n");
     }
     if (who == 1){
         mode = 11;
@@ -1288,11 +1261,14 @@ void ingame(){
     if (ifJiao == 0){
         ifJiao = 1;
         pre();
+        if (termi) return;
     }
     char ou[105];
     cin.getline(ou,105);
+    system("cls");
     if ((ou[0] == 't' || ou[0] == 'T' || ou[0] == 'e' || ou[0] == 'E') && ifGod == 1){
         totM = 0;
+        termi = 1;
         return;
     }
     if (ou[0] == -46 || ou[0] == '0' || ou[0] == 'C' || ou[0] == 'c'){
@@ -1457,9 +1433,7 @@ void rules(){
     else if (lang == 2) printf("If you are a farmer and only give one chance to the Rival, youn will receive the same bonus\n");
     if (lang == 1) printf("按任意键以返回\n");
     else if (lang == 2) printf("Press any key to go back to the previous page\n");
-    char uc[10];
-    gets(uc);
-    cin.getline(uc,10);
+    nextPage();
     return;
 }
 void sett(){
@@ -1471,25 +1445,24 @@ void sett(){
     else if (lang == 2) printf("3.Plane Mode: There are some description in Options, further explanation is not needed\n");
     if (lang == 1) printf("按任意键以返回\n");
     else if (lang == 2) printf("Press any key to go back to the previous page\n");
-    char uc[10];
-    gets(uc);
-    cin.getline(uc,10);
+    nextPage();
 }
 void hel(){
     if (lang == 1) printf("1.游戏规则 2.各项设置 3.返回\n");
     else if (lang == 2) printf("1.Rules 2.Settings 3.Back\n");
     int uc;
     scanf("%d",&uc);
+    system("cls");
     if (uc == 1) rules();
     else if (uc == 2) sett();
     if (uc == 3) return;
     else hel();
 }
 void about(){
-    if (lang == 1) printf("发行日期: 7/6/2021\n");
-    else if (lang == 2) printf("Release Date: 7/6/2021\n");
-    if (lang == 1) printf("版本号: 2.2.5\n");
-    else if (lang == 2) printf("Ver: 2.2.5\n");
+    if (lang == 1) printf("发行日期: 8/10/2021\n");
+    else if (lang == 2) printf("Release Date: 8/10/2021\n");
+    if (lang == 1) printf("版本号: 2.2.7\n");
+    else if (lang == 2) printf("Ver: 2.2.7\n");
     if (edi == 'n'){
         if (lang == 1) printf("C++正式版\n");
         else if (lang == 2) printf("C++ stable channel\n");
@@ -1518,13 +1491,11 @@ void about(){
     else if (lang == 2) printf("If you meet any kind of problem(s), please feel free to contact the developer.\nProject Homepage: https://github.com/bowenOne580/Onegit/tree/斗地主项目 \nQQ: 2797269898\n");
     if (lang == 1) printf("按任意键以返回\n");
     else if (lang == 2) printf("Press any key to go back to the previous page\n");
-    char uc[10];
-    gets(uc);
-    cin.getline(uc,10);
+    nextPage();
     printf("\n");
     return;
 }
-void acheive(){
+void acheive(){ //未优化
     if (lang == 1) printf("你已达成的成就:\n");
     else if (lang == 2) printf("The achievements you have reached\n");
     int f = 0;
@@ -1578,14 +1549,14 @@ void acheive(){
     char uc[10];
     cin.getline(uc,10);
     printf("\n");
+    system("cls");
     return;
 }
 void language(){
     printf("1.中文\n2.English\n");
-    int uc;
-    scanf("%d",&uc);
-    lang = uc;
+    scanf("%d",&lang);
     printf("\n");
+    system("cls");
 }
 void option(){
     if (lang == 1) printf("1.上帝模式: ");
@@ -1605,8 +1576,8 @@ void option(){
     if (lang == 1) printf("3.飞机模式：");
     else if (lang == 2) printf("3.Plane Type: ");
     if (plaType == 1){
-        if (lang == 1) printf("经典(测试版)\n");
-        else if (lang == 2) printf("Classic(Beta)\n");
+        if (lang == 1) printf("经典\n");
+        else if (lang == 2) printf("Classic\n");
     }
     else if (plaType == 2){
         if (lang == 1) printf("宽泛\n");
@@ -1618,6 +1589,7 @@ void option(){
     else if (lang == 2) printf("5.Back\n");
     int uc;
     scanf("%d",&uc);
+    system("cls");
     if (uc == 1){
         if (lang == 1) printf("按1以启用，按0以禁用\n");
         else if (lang == 2) printf("Press 1 to enable, 0 to disable\n");
@@ -1646,6 +1618,7 @@ void option(){
         if (uc == 1) Back();
     }
     printf("\n");
+    system("cls");
 }
 void markAch(int i){
     if (lang == 1) cout<<"达成成就: "<<achCNStack[i]<<endl;
@@ -1661,40 +1634,45 @@ void markAch(int i){
 }
 void checkach(){
     if (ifChun == 1 && ach[1].ifGet == 0) markAch(1);
-        if (win == 1 && ach[2].ifGet == 0) markAch(2);
-        if (win == 10 && ach[3].ifGet == 0) markAch(3);
-        if (win == 50 && ach[4].ifGet == 0) markAch(4);
-        if (lose == 5 && ach[5].ifGet == 0) markAch(5);
-        if (lose == 20 && ach[6].ifGet == 0) markAch(6);
-        if (money>=10000 && ach[7].ifGet == 0) markAch(7);
-        if (money>=30000 && ach[8].ifGet == 0) markAch(8);
-        if (money>=500000 && ach[9].ifGet == 0) markAch(9);
-        if (money>=2147480000 && ach[10].ifGet == 0) markAch(10);
-        if (money<=-10000 && ach[11].ifGet == 0) markAch(11);
-        if (money<=-50000 && ach[12].ifGet == 0) markAch(12);
-        if (money<=-1000000 && ach[13].ifGet == 0) markAch(13);
-        if (money<=-5000000 && ach[14].ifGet == 0){
-            markAch(14);
-            money = 3000;
-            hisco = 0;
-        }
-        if (ifChun == 1 && ach[15].ifGet == 0 && chun==20) markAch(15);
-        if (edi == 'a' && ach[16].ifGet == 0 && speGame==5) markAch(16);
-        if (edi == 'e' && ach[17].ifGet == 0) markAch(17);
-        if (edi == 's' && ach[18].ifGet == 0 && speGame==10) markAch(18);
+    if (win == 1 && ach[2].ifGet == 0) markAch(2);
+    if (win == 10 && ach[3].ifGet == 0) markAch(3);
+    if (win == 50 && ach[4].ifGet == 0) markAch(4);
+    if (lose == 5 && ach[5].ifGet == 0) markAch(5);
+    if (lose == 20 && ach[6].ifGet == 0) markAch(6);
+    if (money>=10000 && ach[7].ifGet == 0) markAch(7);
+    if (money>=30000 && ach[8].ifGet == 0) markAch(8);
+    if (money>=500000 && ach[9].ifGet == 0) markAch(9);
+    if (money>=2147480000 && ach[10].ifGet == 0) markAch(10);
+    if (money<=-10000 && ach[11].ifGet == 0) markAch(11);
+    if (money<=-50000 && ach[12].ifGet == 0) markAch(12);
+    if (money<=-1000000 && ach[13].ifGet == 0) markAch(13);
+    if (money<=-5000000 && ach[14].ifGet == 0){
+        markAch(14);
+        money = 3000;
+        hisco = 0;
+    }
+    if (ifChun == 1 && ach[15].ifGet == 0 && chun==20) markAch(15);
+    if (edi == 'a' && ach[16].ifGet == 0 && speGame==5) markAch(16);
+    if (edi == 'e' && ach[17].ifGet == 0) markAch(17);
+    if (edi == 's' && ach[18].ifGet == 0 && speGame==10) markAch(18);
 }
 void stat(){
-    if (lang == 1) printf("你的总点数: %lld\n",money);
-    else if (lang == 2) printf("Your credits: %lld\n",money);
-    if (lang == 1) printf("最高分数: %d\n",hisco);
-    else if (lang == 2) printf("Highest score: %d\n",hisco);
-    if (lang == 1) printf("总胜局数: %d\n",win);
-    else if (lang == 2) printf("You win for %d times\n",win);
-    if (lang == 1) printf("总败局数: %d\n",lose);
-    else if (lang == 2) printf("But you lose for %d times\n",lose); 
-    if (lang == 1) printf("胜率: %d",int((double(win)/(win+lose))*100));
-    else if (lang == 2) printf("Possibility of Winning: %d",int((double(win)/(win+lose))*100));
-    cout<<"%"<<endl;
+    if ((win+lose) != 0) rating = int((double(win)/(win+lose))*100);
+    if (lang == 1){
+        printf("你的总点数: %lld\n",money);
+        printf("最高分数: %d\n",hisco);
+        printf("总胜局数: %d\n",win);
+        printf("总败局数: %d\n",lose);
+        printf("胜率: %d",rating);
+    }
+    else if (lang == 2){
+        printf("Your credits: %lld\n",money);
+        printf("Highest score: %d\n",hisco);
+        printf("You win for %d times\n",win);
+        printf("But you lose for %d times\n",lose);
+        printf("Possibility of Winning: %d",rating);
+    }
+    puts("%\n");
     if (!ifGod){
         if (lang == 1) printf("凡人无法看见此界面上的更多内容\n\n");
         else if (lang == 2) printf("Only God can see more on this page\n\n");
@@ -1704,12 +1682,14 @@ void stat(){
         gets(uc);
         cin.getline(uc,10);
         printf("\n");
+        system("cls");
         return;
     }
     if (lang == 1) printf("1.修改点数\n2.修改成就达成情况\n3.返回\n");
     else if (lang == 2) printf("1.Modify Credits\n2.Modify Acheivements\n3.Back\n");
     long long uc;
     scanf("%lld",&uc);
+    system("cls");
     if (uc == 1){
         if (lang == 1) printf("想要修改为: ");
         else if (lang == 2) printf("Want to change to: ");
@@ -1811,14 +1791,10 @@ void nbdata(int i){
         else if (lang == 2) printf("Attention!\nSince I am between a rock and a hard place, things just rush to me in a second, considering I have nothing to do with making this game better, I have to say, I decide to put it aside for a while\nWhen the new putting system appeared, many problems came along, after two weeks of hard work, there are no longer any visible problems, so I decide to leave this game alone\nIf you have any questions or suggestions, please feel good to contact me, I won't deal with it right away, but I will put them carefully for future updates\nThe life is long, but we need to give up something in the right time, I believe this will lead a better future.\n");
     }
 }
-void notboard(){
-    int uc = 1,page = 7,ifRead = 1;
+void notboard(){ //未优化
+    int uc = 4,page = 7,ifRead = 1;
     while (uc!=3){
-        if (ifRead) nbdata(page);
-        printf("\n");
-        if (lang == 1) printf("1.下一页 2.上一页 3.退出\n");
-        else if (lang == 2) printf("1.Next Page 2.Previous Page 3.Quit\n");
-        scanf("%d",&uc);
+        system("cls");
         if (uc == 2){
             if (page>=maxPage){
                 if (lang == 1) printf("已是最前一页!\n");
@@ -1841,86 +1817,79 @@ void notboard(){
                 ifRead = 1;
             }
         }
-        else{
+        else if (uc != 4) {
             printf("\n");
             return;
         }
+        if (ifRead) nbdata(page);
+        printf("\n");
+        if (lang == 1) printf("1.下一页 2.上一页 3.退出\n");
+        else if (lang == 2) printf("1.Next Page 2.Previous Page 3.Quit\n");
+        scanf("%d",&uc);
     }
 }
 void runPro(){
     writeVars();
     ifJiao = 0;
+    system("cls");
     if (lang == 1) printf("1.开始\n2.语言/Language\n3.选项\n4.公告\n5.成就\n6.统计\n7.帮助\n8.关于\n9.退出\n");
     else if (lang == 2) printf("1.Start\n2.Language/语言\n3.Options\n4.Notice\n5.Acheivements\n6.Statistics\n7.Help\n8.About\n9.Quit\n");
-    int uc;
-    scanf("%d",&uc);
-    if (uc == 1){
-        ran(); //发牌和排序函数
-        while (totM > 0 && totE > 0) ingame();
-        if (ifChun == 1){
-            chun++;
-            sco*=2;
-        }
-        if (totM == 0){
-            win++;
-            if (lang == 1) printf("你赢了!\n你的得分: %d\n",sco);
-            else if (lang == 2) printf("You Win!\nYour Score: %d\n",sco);
-            if (edi != 'z') money+=sco;
-            else money-=10000000;
-            if (sco>hisco){
-                hisco = sco;
-                if (lang == 1) printf("你的新最高记录: %d分\n",hisco);
-                else if (lang == 2) printf("Your new record: %d points\n",hisco);
-            }
-            if (lang == 1) printf("你现在有%lld点了!\n\n",money);
-            else if (lang == 2) printf("You have %lld points now!\n\n",money);
-        }
-        else{
-            lose++;
-            if (lang == 1) printf("你输了!\n对手得分: %d\n",sco);
-            else if (lang == 2) printf("You Lose!\nRival's Score: %d\n",sco);
-            money-=sco;
-            if (lang == 1) printf("你还有%lld点\n\n",money);
-            else if (lang == 2) printf("You have %lld points\n\n",money);
-        }
-        if (edi!='n') speGame++;
-        checkach();
-        printf("\n");
-        Clear();
-        runPro();
-    }
-    else if (uc == 2){
-        language();
-        runPro();
-    }
-    else if (uc == 3){
-        option();
-        runPro();
-    }
-    else if (uc == 4){
-        notboard();
-        runPro();
-    }
-    else if (uc == 5){
-        acheive();
-        runPro();
-    }
-    else if (uc == 6){
-        stat();
-        runPro();
-    }
-    else if (uc == 7){
-        hel();
-        runPro();
-    }
-    else if (uc == 8){
-        about();
-        runPro();
-    }
-    else return;
+    scanf("%d",&usercho);
+    system("cls");
+   if (usercho == 1){
+       Clear();
+       ran(); //发牌和排序函数
+       while (totM > 0 && totE > 0) ingame();
+       if (termi){
+           if (lang == 1) printf("你已提前终止此局游戏，分数将不会被记录\n");
+           else if (lang == 2) printf("You have terminated this game earlier than expected, the scores made in this game won't be recorded.\n");
+           char uc[4];
+           cin.getline(uc,4);
+           gets(uc);
+           system("cls");
+           return;
+       }
+       if (ifChun == 1){
+           chun++;
+           sco*=2;
+       }
+       if (totM == 0){
+           win++;
+           if (lang == 1) printf("你赢了!\n你的得分: %d\n",sco);
+           else if (lang == 2) printf("You Win!\nYour Score: %d\n",sco);
+           if (edi != 'z') money+=sco;
+           else money-=10000000;
+           if (sco>hisco){
+               hisco = sco;
+               if (lang == 1) printf("你的新最高记录: %d分\n",hisco);
+               else if (lang == 2) printf("Your new record: %d points\n",hisco);
+           }
+           if (lang == 1) printf("你现在有%lld点了!\n\n",money);
+           else if (lang == 2) printf("You have %lld points now!\n\n",money);
+       }
+       else{
+           lose++;
+           if (lang == 1) printf("你输了!\n对手得分: %d\n",sco);
+           else if (lang == 2) printf("You Lose!\nRival's Score: %d\n",sco);
+           money-=sco;
+           if (lang == 1) printf("你还有%lld点\n\n",money);
+           else if (lang == 2) printf("You have %lld points\n\n",money);
+       }
+       if (edi!='n') speGame++;
+       checkach();
+       char uc[2];
+       gets(uc);
+   }
+   else if (usercho == 2) language();
+   else if (usercho == 3) option();
+   else if (usercho == 4) notboard();
+   else if (usercho == 5) acheive();
+   else if (usercho == 6) stat();
+   else if (usercho == 7) hel();
+   else if (usercho == 8) about();
 }
 int main(){
     readVars();
-    runPro();
+    while (usercho != 9) runPro();
     return 0;
 }
