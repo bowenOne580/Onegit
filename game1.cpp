@@ -1,21 +1,17 @@
-#include<iostream>
-#include<cstdio>
-#include<ctime> //用于产生随机数(系统时间随机)
-#include<cstring>
-#include<string>
-#include<cmath>
-#include<conio.h>
-#include<cstdlib>
 #include<bits/stdc++.h>
 using namespace std;
 int cardNum[20] = {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1},lenOU,sumOU,Ou[105];
 int Max,cntE[20],cntM[20],cntB[5],totM = 17,totE = 17,mode,lMode,boKing,sco = 100,hisco = 0;
 int lChu[100],lSize,ifChun = 1,lLen,lang = 1,ifGod,dif = 2,ifJiao = 0,win,lose;
 int chun,lenColl[20],maxPage = 7,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],oppor,speGame;
-int haDou,haSin,plaType = 1,calcThree[20],termi,usercho,rating;
+int haDou,haSin,plaType = 1,calcThree[20],termi,usercho,rating,sma,roun,rounds[105],cl = 1;
 char edi = 'n';
 long long money = 3000;
-string cardStack[20] = {"3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2", "SMALL","KING",};
+struct carO{
+    string cards[25];
+    int id;
+} cardOut[105];
+string cardStack[20] = {"3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2", "SMALL","KING"};
 string achCNStack[25] = {
     "","春天到了","第一场胜仗","常胜将军","无坚不摧","胜败乃兵家常事","即生瑜，何生亮","小康","富翁","富可敌国",
     "富到无法用int衡量","负翁","金融危机","濒临破产","从头开始","春意盎然","斗地主一岁了!","E32021特别庆祝","剁手快乐"};
@@ -36,19 +32,14 @@ string descripEN[25] = {
 string achMonCN[20] = {"元","二","三","四","五","六","七","八","九","十","十一","十二"};
 string achMonEN[20] = {"January","Febrary","March","April","May","June","July","August","September","October","November","December"};
 struct acheivement{
-    int ifGet;
-    int day;
-    int mon;
-    int yr;
-};
-acheivement ach[1005];
+    int ifGet,day,mon,yr;
+} ach[1005];
 void readVars(){
     ifstream input("data.txt");
-    input>>money>>hisco>>ifGod>>win>>lose>>dif;
-    for (int i=1;i<=20;i++){ //已使用18个
-        input>>ach[i].ifGet>>ach[i].day>>ach[i].mon>>ach[i].yr;
-    }
-    input>>speGame>>plaType>>rating;
+    input>>money>>hisco>>lang>>ifGod>>win>>lose>>dif;
+    //已使用18个
+    for (int i=1;i<=20;i++) input>>ach[i].ifGet>>ach[i].day>>ach[i].mon>>ach[i].yr;
+    input>>speGame>>plaType>>rating>>cl;
     if (edi == 'n') speGame = 0;
     input.close();
 }
@@ -56,17 +47,16 @@ void writeVars(){
     ofstream output;
     output.open("data.txt");
     output<<money<<endl<<hisco<<endl<<lang<<endl<<ifGod<<endl<<win<<endl<<lose<<endl<<dif<<endl;
-    for (int i=1;i<=20;i++){
-        output<<ach[i].ifGet<<" "<<ach[i].day<<" "<<ach[i].mon<<" "<<ach[i].yr<<endl;
-    }
-    output<<speGame<<endl<<plaType<<endl<<rating<<endl;
+    for (int i=1;i<=20;i++) output<<ach[i].ifGet<<" "<<ach[i].day<<" "<<ach[i].mon<<" "<<ach[i].yr<<endl;
+    output<<speGame<<endl<<plaType<<endl<<rating<<endl<<cl<<endl;
     output.close();
 }
+void clearScr(){
+    system("cls");
+}
 void Clear(){
-	for (int i=0;i<15;i++){
-		if (i<=12) cardNum[i] = 4;
-		else cardNum[i] = 1;
-	}
+    for (int i=0;i<=12;i++) cardNum[i] = 4;
+    for (int i=13;i<=14;i++) cardNum[i] = 1; //大小王
     memset(cntE,0,sizeof(cntE));
     memset(cntM,0,sizeof(cntM));
     memset(cntB,0,sizeof(cntB));
@@ -75,6 +65,8 @@ void Clear(){
     memset(tri,0,sizeof(tri));
     memset(bomb,0,sizeof(bomb));
     memset(useful,0,sizeof(useful));
+    for (int i=0;i<=roun;i++) for (int j=0;j<=20;j++) cardOut[i].cards[j].clear();
+    roun = 0;
     oppor = 0;
     kingsman[0] = 0;
     totM = 17;
@@ -85,7 +77,7 @@ void Clear(){
     ifChun = 1;
     termi = 0; //初始化变量
 }
-void Back(){
+void Back(){ 
     money = 3000;
     hisco = 0;
     win = 0;
@@ -96,8 +88,62 @@ void Back(){
 void nextPage(){
     char uc[10];
     gets(uc);
-    cin.getline(uc,10);
-    system("cls");
+    cin.getline(uc,10); //权衡
+    if (cl) clearScr();
+}
+void initBeat(){ //未优化
+    int doub = 0,sig = 0;
+    memset(si,0,sizeof(si));
+    memset(dou,0,sizeof(dou));
+    memset(tri,0,sizeof(tri));
+    memset(bomb,0,sizeof(bomb));
+    memset(useful,0,sizeof(useful));
+    kingsman[0] = 0;
+    haDou = 0;
+    haSin = 0;
+    oppor = 0;
+    oppor+=cntE[12];
+    useful[12]+=6;
+    if (cntE[13] == 1 && cntE[14] == 1){
+        kingsman[0] = 1; //对王判断
+        oppor+=4;
+    }
+    for (int i=0;i<13;i++){ //去王优化
+        if (cntE[i]>3){
+            bomb[i] = 1;
+            useful[i]+=7;
+            oppor+=3;
+        }
+        if (cntE[i]>2){
+            tri[i] = 1;
+            useful[i]+=3;
+            oppor+=2;
+        }
+        if (cntE[i]>1) doub++;
+        else{
+            if (doub>=3){
+                for (int j=i-doub;j<=i-1;j++){
+                    dou[j] = 1;
+                    useful[j]+=2;
+                }
+                haDou = 1;
+                oppor++;
+            }
+            doub = 0;
+        }
+        if (cntE[i] >= 1) sig++;
+        else{
+            if (sig>=5){
+                for (int j=i-sig;j<=i-1;j++){
+                    si[j] = 1;
+                    useful[j]++;
+                }
+                haSin = 1;
+                oppor++;
+            }
+            sig = 0;
+        }
+    }
 }
 void ran(){
     srand(time(0));
@@ -110,6 +156,18 @@ void ran(){
         if (num > 19) cntE[r]++;
         if (num > 16 && num < 20) cntB[num-17] = r;
         num++;
+    }
+    initBeat();
+    int op1 = oppor;
+    for (int i=0;i<=14;i++){
+        swap(cntM[i],cntE[i]);
+    }
+    initBeat();
+    int op2 = oppor;
+    if (op2<op1){
+        for (int i=0;i<=14;i++){
+            swap(cntM[i],cntE[i]);
+        }
     }
 }
 int calc(){ //未优化
@@ -192,7 +250,12 @@ int Save(){ //未优化
     else if (mode == 2 && boKing) i = 15;
     for (i;i<15;i++){
         if (cntE[i]>3){
-            cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<endl;
+            cardOut[roun].cards[0] = cardStack[i];
+            cardOut[roun].cards[1] = cardStack[i];
+            cardOut[roun].cards[2] = cardStack[i];
+            cardOut[roun].cards[3] = cardStack[i];
+            cardOut[roun].id = 1;
+            rounds[roun] = 3;
             lChu[++lSize] = i;
             cntE[i]-=4;
             totE-=4;
@@ -203,7 +266,10 @@ int Save(){ //未优化
         }
     }
     if (Good == 0 && kingsman[0] == 1){
-        cout<<"SMALL KING"<<endl;
+        cardOut[roun].cards[0] = cardStack[13];
+        cardOut[roun].cards[1] = cardStack[14];
+        cardOut[roun].id = 1;
+        rounds[roun] = 1;
         Good = 1;
         totE-=2;
         lChu[++lSize] = 14;
@@ -214,357 +280,34 @@ int Save(){ //未优化
     }
     return Good;
 }
-void beat(){
-    int canChu = 0;
-    lLen = lenOU;
-    lSize = -1;
-    lMode = mode;
-    if (mode == 1){ //单牌
-        for (int i=Ou[0]+1;i<15;i++){
-            if (cntE[i]>0){
-                cout<<cardStack[i]<<endl;
-                lChu[++lSize] = i;
-                cntE[i]--;
-                totE--;
-                canChu = 1;
-                break;
-            }
+void creErr(){
+    ofstream output("error.log");
+    if (lang == 1) output<<"本次出牌记录如下："<<endl;
+    else if (lang == 2) output<<"Rival's way of putting cards is recorded as following: "<<endl;
+    for (int i=0;i<=roun;i++){
+        if (cardOut[i].id == 1){
+            if (lang == 1) output<<"对手出牌：";
+            else if (lang == 2) output<<"Rival has put: ";
         }
-    }
-    else if (mode == 2){ //对子
-        if (boKing) sco*=4;
-        for (int i=Ou[0]+1;i<15;i++){
-            if (cntE[i]>1){
-                cout<<cardStack[i]<<" "<<cardStack[i]<<endl;
-                lChu[++lSize] = i;
-                cntE[i]-=2;
-                totE-=2;
-                canChu = 1;
-                break;
-            }
+        else if (cardOut[i].id == 2){
+            if (lang == 1) output<<"你出了：";
+            else if (lang == 2) output<<"You has put: ";
         }
-    }
-    else if (mode == 3){ //三不带
-        for (int i=Ou[0]+1;i<13;i++){ //去王优化
-            if (cntE[i]>2){
-                cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<endl;
-                lChu[++lSize] = i;
-                cntE[i]-=3;
-                totE-=3;
-                canChu = 1;
-                break;
-            }
+        for (int j=0;j<=rounds[i];j++){
+            output<<cardOut[i].cards[j]<<" ";
         }
+        output<<endl;
     }
-    else if (mode == 4){ //三带一
-        for (int i=Ou[0]+1;i<13;i++){ //去王优化
-            if (cntE[i]>2){
-                for (int j=0;j<13;j++){ //去王优化
-                    if ((cntE[j]>0 && j!=i) || cntE[j]>3){
-                        cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<endl;
-                        lChu[++lSize] = i;
-                        cntE[j]--;
-                        cntE[i]-=3;
-                        totE-=4;
-                        canChu = 1;
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-        lLen--;
-    }
-    else if (mode == 5){ //炸弹
-        sco*=2;
-        for (int i=Ou[0]+1;i<13;i++){ //去王优化，此处还需特判大小王
-            if (cntE[i]>3){
-                sco*=2;
-                cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<endl;
-                lChu[++lSize] = i;
-                cntE[i]-=4;
-                totE-=4;
-                canChu = 1;
-                break;
-            }
-        }
-    }
-    else if (mode == 6){ //三带二
-        for (int i=Ou[0]+1;i<13;i++){ //去王优化
-            if (cntE[i]>2){
-                for (int j=0;j<13;j++){ //去王优化
-                    if (cntE[j]>1 && j!=i){
-                        cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<endl;
-                        lChu[++lSize] = i;
-                        cntE[j]-=2;
-                        cntE[i]-=3;
-                        totE-=5;
-                        canChu = 1;
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-        lLen-=2;
-    }
-    else if (mode == 7){ //顺子
-        int cnt = 0;
-        for (int i=Ou[0]+1;i<12;i++){ //去王和2优化
-            if (cntE[i]>0) cnt++;
-            else cnt = 0;
-            if (cnt == lenOU){
-                for (int j=i-lenOU+1;j<=i;j++){
-                    cout<<cardStack[j]<<" ";
-                    cntE[j]--;
-                    totE--;
-                }
-                lChu[++lSize] = i-lenOU+1;
-                cout<<endl;
-                canChu = 1;
-                break;
-            }
-        }
-    }
-    else if (mode == 8){ //连对
-        int cnt = 0;
-        for (int i=Ou[0]+1;i<12;i++){ //去王和2优化
-            if (cntE[i]>1) cnt+=2;
-            else cnt = 0;
-            if (cnt == lenOU){
-                for (int j=i-(lenOU/2)+1;j<=i;j++){
-                    cout<<cardStack[j]<<" "<<cardStack[j]<<" ";
-                    cntE[j]-=2;
-                    totE-=2;
-                }
-                lChu[++lSize] = i-(lenOU/2)+1;
-                cout<<endl;
-                canChu = 1;
-                break;
-            }
-        }
-    }
-    else if (mode == 9){ //小飞机
-        for (int i=Ou[0]+1;i<13;i++){ //去王优化
-            if (cntE[i]>2){
-                for (int j=i+1;j<13;j++){ //去王优化
-                    if (cntE[j]>2){
-                        cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[j]<<endl;
-                        lChu[++lSize] = i;
-                        cntE[i]-=3;
-                        cntE[j]-=3;
-                        totE-=6;
-                        canChu = 1;
-                        j = 12;
-                        i = 12;
-                        break;
-                    }
-                }
-            }
-            break;
-        }
-        lLen = 3;
-    }
-    else if (mode == 10){ //四带二
-        for (int i=Ou[0]+1;i<13;i++){ //去王优化
-            if (cntE[i]>3){
-                for (int j=0;j<13;j++){ //去王优化
-                    if (cntE[j]>1 && j!=i){
-                        cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<endl;
-                        lChu[++lSize] = i;
-                        cntE[i]-=4;
-                        cntE[j]-=2;
-                        totE-=6;
-                        canChu = 1;
-                        j = 12;
-                        i = 12;
-                        break;
-                    }
-                }
-            }
-            break;
-        }
-        lLen = 4;
-    }
-    else if (mode == 11){ //对手出牌
-        for (int i=0;i<15;i++){
-            if (cntE[i]>0){
-                cout<<cardStack[i]<<endl;
-                lChu[++lSize] = i;
-                cntE[i]--;
-                totE--;
-                canChu = 1;
-                lMode = 1;
-                lLen = 1;
-                break;
-            }
-        }
-    }
-    else if (mode == 12){ //中飞机
-        sco*=2;
-        int cnt1 = 0,cnt2 = 0,v[20] = {},tmp[10] = {};
-        for (int i=Ou[0]+1;i<13;i++){ //去王优化
-            if (cntE[i]>2){
-                cnt1++;
-                v[i] = 1;
-                tmp[cnt1-1] = i;
-            }
-            if (cnt1 == 2){ //开始寻找单牌
-                for (int j=0;j<13;j++){ //去王优化
-                    if (cntE[j]>0 && v[j] == 0){
-                        cnt2++;
-                        v[j] = 1;
-                        tmp[cnt2+cnt1-1] = j;
-                    }
-                    if (cnt2 == 2){
-                        sco*=2;
-                        for (int k=0;k<4;k++){
-                            if (k<2){
-                                cout<<cardStack[tmp[k]]<<" "<<cardStack[tmp[k]]<<" "<<cardStack[tmp[k]]<<" ";
-                                cntE[tmp[k]]-=3;
-                                totE-=3;
-                            }
-                            else{
-                                cout<<cardStack[tmp[k]]<<" ";
-                                cntE[tmp[k]]--;
-                                totE--;
-                            }
-                        }
-                        lChu[++lSize] = tmp[0];
-                        cout<<endl;
-                        canChu = 1;
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-        lLen = 3;
-    }
-    else if (mode == 13){ //大飞机
-        sco*=3;
-        int cnt1 = 0,cnt2 = 0,v[20] = {},tmp[10] = {};
-        for (int i=Ou[0]+1;i<13;i++){ //去王优化
-            if (cntE[i]>2){
-                cnt1++;
-                v[i] = 1;
-                tmp[cnt1-1] = i; //下标从0开始
-            }
-            if (cnt1 == 2){ //开始寻找对子
-                for (int j=0;j<13;j++){ //去王优化
-                    if (cntE[j]>1 && v[j] == 0){
-                        cnt2++;
-                        v[j] = 1;
-                        tmp[cnt2+cnt1-1] = j;
-                    }
-                    if (cnt2 == 2){
-                        sco*=3;
-                        for (int k=0;k<4;k++){
-                            if (k<2){
-                                cout<<cardStack[tmp[k]]<<" "<<cardStack[tmp[k]]<<" "<<cardStack[tmp[k]]<<" ";
-                                cntE[tmp[k]]-=3;
-                                totE-=3;
-                            }
-                            else{
-                                cout<<cardStack[tmp[k]]<<" "<<cardStack[tmp[k]]<<" ";
-                                cntE[tmp[k]]-=2;
-                                totE-=2;
-                            }
-                        }
-                        lChu[++lSize] = tmp[0];
-                        cout<<endl;
-                        canChu = 1;
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-        lLen = 3;
-    }
-    else if (mode == 14){
-        int a = -1;
-    }
-    else{
-        if (!ifGod){
-            if (lang == 1) printf("功能未完善或牌出错了\n");
-            else if (lang == 2) printf("Feature not included or you have put the Wrong Card\n");
-            canChu = 1;
-            lMode = 0;
-        }
-        
-    }
-    if (canChu == 0){
-        if (totM<=6){
-            if (!Save()){
-                if (lang == 1) cout<<"要不起"<<endl;
-                else if (lang == 2) cout<<"Can't afford"<<endl;
-                lMode = 0;
-                lLen = 0;
-            }
-        }
-        else{
-            if (lang == 1) cout<<"要不起"<<endl;
-            else if (lang == 2) cout<<"Can't afford"<<endl;
-            lMode = 0;
-            lLen = 0;
-        }
-    }
-    else ifChun++;
+    output.close();
+    if (lang == 1) printf("已生成错误文件\n");
+    else if (lang == 2) printf("Error file has been created\n");
+    char uc[10];
+    gets(uc);
+    cin.getline(uc,5);
 }
-void initBeat(){ //未优化
-    int doub = 0,sig = 0;
-    memset(si,0,sizeof(si));
-    memset(dou,0,sizeof(dou));
-    memset(tri,0,sizeof(tri));
-    memset(bomb,0,sizeof(bomb));
-    memset(useful,0,sizeof(useful));
-    kingsman[0] = 0;
-    haDou = 0;
-    haSin = 0;
-    oppor = 0;
-    oppor+=cntE[12];
-    useful[12]+=6;
-    if (cntE[13] == 1 && cntE[14] == 1){
-        kingsman[0] = 1; //对王判断
-        oppor+=4;
-    }
-    for (int i=0;i<13;i++){ //去王优化
-        if (cntE[i]>3){
-            bomb[i] = 1;
-            useful[i]+=7;
-            oppor+=3;
-        }
-        if (cntE[i]>2){
-            tri[i] = 1;
-            useful[i]+=3;
-            oppor+=2;
-        }
-        if (cntE[i]>1) doub++;
-        else{
-            if (doub>=3){
-                for (int j=i-doub;j<=i-1;j++){
-                    dou[j] = 1;
-                    useful[j]+=2;
-                }
-                haDou = 1;
-                oppor++;
-            }
-            doub = 0;
-        }
-        if (cntE[i] >= 1) sig++;
-        else{
-            if (sig>=5){
-                for (int j=i-sig;j<=i-1;j++){
-                    si[j] = 1;
-                    useful[j]++;
-                }
-                haSin = 1;
-                oppor++;
-            }
-            sig = 0;
-        }
-    }
+void beat(){
+    if (lang == 1) printf("尚未完善\n");
+    else if (lang == 2) printf("Not Completed\n");
 }
 int weigh(int left,int right,int length){ //未优化
     int Min = 0x7fffffff,mpos = -1;
@@ -587,6 +330,7 @@ int weigh(int left,int right,int length){ //未优化
     return mpos;
 }
 void selfOut(){ //未优化
+    roun++;
     int cntT = 0,cntD = 0,cntS = 0,flag = 2;
     for (int i=0;i<13;i++){
         if (cntE[i]>=3){
@@ -625,7 +369,18 @@ void selfOut(){ //未优化
                                 cntE[k]-=2;
                             }
                             else cntE[p]-=2;
-                            cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[k]<<" "<<cardStack[k]<<" "<<cardStack[p]<<" "<<cardStack[p]<<endl;
+                            cardOut[roun].cards[0] = cardStack[i];
+                            cardOut[roun].cards[1] = cardStack[i];
+                            cardOut[roun].cards[2] = cardStack[i];
+                            cardOut[roun].cards[3] = cardStack[j];
+                            cardOut[roun].cards[4] = cardStack[j];
+                            cardOut[roun].cards[5] = cardStack[j];
+                            cardOut[roun].cards[6] = cardStack[k];
+                            cardOut[roun].cards[7] = cardStack[k];
+                            cardOut[roun].cards[8] = cardStack[p];
+                            cardOut[roun].cards[9] = cardStack[p];
+                            cardOut[roun].id = 1;
+                            rounds[roun] = 9;
                             lChu[++lSize] = i;
                             totE-=10;
                             lMode = 13;
@@ -665,7 +420,16 @@ void selfOut(){ //未优化
                                 cntE[k]--;
                             }
                             else cntE[p]--;
-                            cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[k]<<" "<<cardStack[p]<<endl;
+                            cardOut[roun].cards[0] = cardStack[i];
+                            cardOut[roun].cards[1] = cardStack[i];
+                            cardOut[roun].cards[2] = cardStack[i];
+                            cardOut[roun].cards[3] = cardStack[j];
+                            cardOut[roun].cards[4] = cardStack[j];
+                            cardOut[roun].cards[5] = cardStack[j];
+                            cardOut[roun].cards[6] = cardStack[k];
+                            cardOut[roun].cards[7] = cardStack[p];
+                            cardOut[roun].id = 1;
+                            rounds[roun] = 7;
                             lChu[++lSize] = i;
                             totE-=8;
                             lMode = 12;
@@ -698,7 +462,14 @@ void selfOut(){ //未优化
                         cntE[i]-=3;
                     }
                     else cntE[j]-=3;
-                    cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[j]<<endl;
+                    cardOut[roun].cards[0] = cardStack[i];
+                    cardOut[roun].cards[1] = cardStack[i];
+                    cardOut[roun].cards[2] = cardStack[i];
+                    cardOut[roun].cards[3] = cardStack[j];
+                    cardOut[roun].cards[4] = cardStack[j];
+                    cardOut[roun].cards[5] = cardStack[j];
+                    cardOut[roun].id = 1;
+                    rounds[roun] = 5;
                     lChu[++lSize] = i;
                     totE-=6;
                     j = 12;
@@ -716,7 +487,13 @@ void selfOut(){ //未优化
                 cntE[i]-=3;
                 int j = weigh(0,12,2);
                 if (j!=-1){
-                    cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<endl;
+                    cardOut[roun].cards[0] = cardStack[i];
+                    cardOut[roun].cards[1] = cardStack[i];
+                    cardOut[roun].cards[2] = cardStack[i];
+                    cardOut[roun].cards[3] = cardStack[j];
+                    cardOut[roun].cards[4] = cardStack[j];
+                    cardOut[roun].id = 1;
+                    rounds[roun] = 4;
                     cntE[j]-=2;
                     totE-=5;
                     lChu[++lSize] = i;
@@ -732,7 +509,12 @@ void selfOut(){ //未优化
                 cntE[i]-=3;
                 int j = weigh(0,14,1);
                 if (j!=-1){
-                    cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<endl;
+                    cardOut[roun].cards[0] = cardStack[i];
+                    cardOut[roun].cards[1] = cardStack[i];
+                    cardOut[roun].cards[2] = cardStack[i];
+                    cardOut[roun].cards[3] = cardStack[j];
+                    cardOut[roun].id = 1;
+                    rounds[roun] = 3;
                     cntE[j]--;
                     totE-=4;
                     lChu[++lSize] = i;
@@ -745,7 +527,11 @@ void selfOut(){ //未优化
         else{
             int i = weigh(0,12,3);
             if (i!=-1){
-                cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<endl;
+                cardOut[roun].cards[0] = cardStack[i];
+                cardOut[roun].cards[1] = cardStack[i];
+                cardOut[roun].cards[2] = cardStack[i];
+                cardOut[roun].id = 1;
+                rounds[roun] = 2;
                 lChu[++lSize] = i;
                 cntE[i]-=3;
                 totE-=3;
@@ -771,11 +557,15 @@ void selfOut(){ //未优化
                     i = tmp;
                 }
             }
+            int pos = 0;
             for (int i=mpos;i<=mpos+Max-1;i++){
-                cout<<cardStack[i]<<" "<<cardStack[i]<<" ";
+                cardOut[roun].cards[pos++] = cardStack[i];
+                cardOut[roun].cards[pos++] = cardStack[i];
+                cardOut[roun].id = 1;
                 cntE[i]-=2;
                 totE-=2;
             }
+            rounds[roun] = pos-1;
             lMode = 8;
             lChu[++lSize] = mpos;
             cout<<endl;
@@ -798,21 +588,26 @@ void selfOut(){ //未优化
                     i = tmp;
                 }
             }
+            int pos = 0;
             for (int i=mpos;i<=mpos+Max-1;i++){
-                cout<<cardStack[i]<<" ";
+                cardOut[roun].cards[pos++] = cardStack[i];
+                cardOut[roun].id = 1;
                 cntE[i]--;
                 totE--;
             }
+            rounds[roun] = pos-1;
             lChu[++lSize] = mpos;
             lMode = 7;
             cout<<endl;
             lLen = Max;
         }
         else{
-            //此处还需增加自己只剩一张与两张的特判
             int i = weigh(0,12,2);
             if (i!=-1){
-                cout<<cardStack[i]<<" "<<cardStack[i]<<endl;
+                cardOut[roun].cards[0] = cardStack[i];
+                cardOut[roun].cards[1] = cardStack[i];
+                cardOut[roun].id = 1;
+                rounds[roun] = 1;
                 lChu[++lSize] = i;
                 lLen = 2;
                 cntE[i]-=2;
@@ -822,7 +617,9 @@ void selfOut(){ //未优化
             else{
                 int i = weigh(0,14,1);
                 if (i!=-1){
-                    cout<<cardStack[i]<<endl;
+                    cardOut[roun].cards[0] = cardStack[i];
+                    cardOut[roun].id = 1;
+                    rounds[roun] = 0;
                     lChu[++lSize] = i;
                     lLen = 1;
                     cntE[i]--;
@@ -842,7 +639,9 @@ void beat2(){ //急需优化
     if (mode == 1){
         int i = weigh(Ou[0]+1,14,1);
         if (i!=-1){
-            cout<<cardStack[i]<<endl;
+            cardOut[roun].cards[0] = cardStack[i];
+            cardOut[roun].id = 1;
+            rounds[roun] = 0;
             lChu[++lSize] = i;
             cntE[i]--;
             totE--;
@@ -853,7 +652,10 @@ void beat2(){ //急需优化
         if (boKing) sco*=4;
         int i = weigh(Ou[0]+1,14,2);
         if (i!=-1){
-            cout<<cardStack[i]<<" "<<cardStack[i]<<endl;
+            cardOut[roun].cards[0] = cardStack[i];
+            cardOut[roun].cards[1] = cardStack[i];
+            cardOut[roun].id = 1;
+            rounds[roun] = 1;
             lChu[++lSize] = i;
             cntE[i]-=2;
             totE-=2;
@@ -861,9 +663,13 @@ void beat2(){ //急需优化
         }
     }
     else if (mode == 3){ //三不带
-        int i = weigh(Ou[0]+1,12,3);
+        int i = weigh(sma+1,12,3);
         if (i!=-1){
-            cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<endl;
+            cardOut[roun].cards[0] = cardStack[i];
+            cardOut[roun].cards[1] = cardStack[i];
+            cardOut[roun].cards[2] = cardStack[i];
+            cardOut[roun].id = 1;
+            rounds[roun] = 2;
             lChu[++lSize] = i;
             cntE[i]-=3;
             totE-=3;
@@ -871,12 +677,17 @@ void beat2(){ //急需优化
         }
     }
     else if (mode == 4){ //三带一
-        int i = weigh(Ou[0]+1,12,3);
+        int i = weigh(sma+1,12,3);
         if (i!=-1){
             cntE[i]-=3;
             int j = weigh(0,14,1);
             if (j!=-1){
-                cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<endl;
+                cardOut[roun].cards[0] = cardStack[i];
+                cardOut[roun].cards[1] = cardStack[i];
+                cardOut[roun].cards[2] = cardStack[i];
+                cardOut[roun].cards[3] = cardStack[j];
+                cardOut[roun].id = 1;
+                rounds[roun] = 3;
                 cntE[j]--;
                 totE-=4;
                 lChu[++lSize] = i;
@@ -888,10 +699,15 @@ void beat2(){ //急需优化
     }
     else if (mode == 5){ //炸弹
         sco*=2;
-        int i = weigh(Ou[0]+1,12,4);
+        int i = weigh(sma+1,12,4);
         if (i!=-1){
             sco*=2;
-            cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<endl;
+            cardOut[roun].cards[0] = cardStack[i];
+            cardOut[roun].cards[1] = cardStack[i];
+            cardOut[roun].cards[2] = cardStack[i];
+            cardOut[roun].cards[3] = cardStack[i];
+            cardOut[roun].id = 1;
+            rounds[roun] = 3;
             lChu[++lSize] = i;
             cntE[i]-=4;
             totE-=4;
@@ -899,12 +715,18 @@ void beat2(){ //急需优化
         }
     }
     else if (mode == 6){ //三带二
-        int i = weigh(Ou[0]+1,12,3);
+        int i = weigh(sma+1,12,3);
         if (i!=-1){
             cntE[i]-=3;
             int j = weigh(0,12,2);
             if (j!=-1){
-                cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<endl;
+                cardOut[roun].cards[0] = cardStack[i];
+                cardOut[roun].cards[1] = cardStack[i];
+                cardOut[roun].cards[2] = cardStack[i];
+                cardOut[roun].cards[3] = cardStack[j];
+                cardOut[roun].cards[4] = cardStack[j];
+                cardOut[roun].id = 1;
+                rounds[roun] = 4;
                 cntE[j]-=2;
                 totE-=5;
                 lChu[++lSize] = i;
@@ -929,11 +751,14 @@ void beat2(){ //急需优化
             }
         }
         if (mpos!=-1){
+            int pos = 0;
             for (int i=mpos;i<=mpos+lenOU-1;i++){
-                cout<<cardStack[i]<<" ";
+                cardOut[roun].cards[pos++] = cardStack[i];
+                cardOut[roun].id = 1;
                 cntE[i]--;
                 totE--;
             }
+            rounds[roun] = pos-1;
             lChu[++lSize] = mpos;
             cout<<endl;
             canChu = 1;
@@ -950,16 +775,19 @@ void beat2(){ //急需优化
                 if (cntDo<Min){
                     Min = cntDo;
                     mpos = i;
-                    cout<<cardStack[mpos]<<endl;
                 }
             }
         }
         if (mpos!=-1){
+            int pos = 0;
             for (int i=mpos;i<=mpos+lenOU/2-1;i++){
-                cout<<cardStack[i]<<" "<<cardStack[i]<<" ";
+                cardOut[roun].cards[pos++] = cardStack[i];
+                cardOut[roun].cards[pos++] = cardStack[i];
+                cardOut[roun].id = 1;
                 cntE[i]-=2;
                 totE-=2;
             }
+            rounds[roun] = pos-1;
             lChu[++lSize] = mpos;
             cout<<endl;
             canChu = 1;
@@ -967,16 +795,23 @@ void beat2(){ //急需优化
     }
     else if (mode == 9){ //小飞机
         int i,j;
-        if (plaType == 1) i = weigh(Ou[0]+1,10,6);
-        else if (plaType == 2) i = weigh(Ou[0]+1,11,3);
+        if (plaType == 1) i = weigh(sma+1,10,6);
+        else if (plaType == 2) i = weigh(sma+1,11,3);
         if (i!=-1){
             cntE[i]-=3;
             if (plaType == 1) j = i+1;
-            else if (plaType == 2) j = weigh(Ou[0]+1,11,3);
+            else if (plaType == 2) j = weigh(sma+1,11,3);
             if (j!=-1){
                 sco*=2;
                 if (i>j) swap(i,j);
-                cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[j]<<endl;
+                cardOut[roun].cards[0] = cardStack[i];
+                cardOut[roun].cards[1] = cardStack[i];
+                cardOut[roun].cards[2] = cardStack[i];
+                cardOut[roun].cards[3] = cardStack[j];
+                cardOut[roun].cards[4] = cardStack[j];
+                cardOut[roun].cards[5] = cardStack[j];
+                cardOut[roun].id = 1;
+                rounds[roun] = 5;
                 lChu[++lSize] = i;
                 cntE[j]-=3;
                 totE-=6;
@@ -989,7 +824,7 @@ void beat2(){ //急需优化
         lLen = 6;
     }
     else if (mode == 10){ //四带二
-        int i = weigh(Ou[0]+1,12,4);
+        int i = weigh(sma+1,12,4);
         if (i!=-1){
             cntE[i]-=4;
             int j = weigh(0,12,1);
@@ -1002,7 +837,14 @@ void beat2(){ //急需优化
                         cntE[j]--;
                     }
                     else cntE[k]--;
-                    cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[k]<<endl;
+                    cardOut[roun].cards[0] = cardStack[i];
+                    cardOut[roun].cards[1] = cardStack[i];
+                    cardOut[roun].cards[2] = cardStack[i];
+                    cardOut[roun].cards[3] = cardStack[i];
+                    cardOut[roun].cards[4] = cardStack[j];
+                    cardOut[roun].cards[5] = cardStack[j];
+                    cardOut[roun].id = 1;
+                    rounds[roun] = 5;
                     lChu[++lSize] = i;
                     totE-=6;
                     canChu = 1;
@@ -1022,12 +864,12 @@ void beat2(){ //急需优化
     else if (mode == 12){ //中飞机
         sco*=2;
         int i,j;
-        if (plaType == 1) i = weigh(Ou[0]+1,10,6);
-        else if (plaType == 2) i = weigh(Ou[0]+1,11,3);
+        if (plaType == 1) i = weigh(sma+1,10,6);
+        else if (plaType == 2) i = weigh(sma+1,11,3);
         if (i!=-1){
             cntE[i]-=3;
             if (plaType == 1) j = i+1;
-            else if (plaType == 2) j = weigh(Ou[0]+1,11,3);
+            else if (plaType == 2) j = weigh(sma+1,11,3);
             if (j!=-1){
                 cntE[j]-=3;
                 int k = weigh(0,14,1);
@@ -1038,7 +880,16 @@ void beat2(){ //急需优化
                         sco*=2;
                         if (i>j) swap(i,j);
                         if (k>p) swap(k,p);
-                        cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[k]<<" "<<cardStack[p]<<endl;
+                        cardOut[roun].cards[0] = cardStack[i];
+                        cardOut[roun].cards[1] = cardStack[i];
+                        cardOut[roun].cards[2] = cardStack[i];
+                        cardOut[roun].cards[3] = cardStack[j];
+                        cardOut[roun].cards[4] = cardStack[j];
+                        cardOut[roun].cards[5] = cardStack[j];
+                        cardOut[roun].cards[6] = cardStack[k];
+                        cardOut[roun].cards[7] = cardStack[p];
+                        cardOut[roun].id = 1;
+                        rounds[roun] = 7;
                         lChu[++lSize] = i;
                         cntE[p]--;
                         totE-=8;
@@ -1057,12 +908,12 @@ void beat2(){ //急需优化
     else if (mode == 13){ //大飞机
         sco*=3;
         int i,j;
-        if (plaType == 1) i = weigh(Ou[0]+1,10,6);
-        else if (plaType == 2) i = weigh(Ou[0]+1,11,3);
+        if (plaType == 1) i = weigh(sma+1,10,6);
+        else if (plaType == 2) i = weigh(sma+1,11,3);
         if (i!=-1){
             cntE[i]-=3;
             if (plaType == 1) j = i+1;
-            else if (plaType == 2) j = weigh(Ou[0]+1,11,3);
+            else if (plaType == 2) j = weigh(sma+1,11,3);
             if (j!=-1){
                 cntE[j]-=3;
                 int k = weigh(0,12,2);
@@ -1073,7 +924,18 @@ void beat2(){ //急需优化
                         sco*=3;
                         if (i>j) swap(i,j);
                         if (k>p) swap(k,p);
-                        cout<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[i]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[j]<<" "<<cardStack[k]<<" "<<cardStack[k]<<" "<<cardStack[p]<<" "<<cardStack[p]<<endl;
+                        cardOut[roun].cards[0] = cardStack[i];
+                        cardOut[roun].cards[1] = cardStack[i];
+                        cardOut[roun].cards[2] = cardStack[i];
+                        cardOut[roun].cards[3] = cardStack[j];
+                        cardOut[roun].cards[4] = cardStack[j];
+                        cardOut[roun].cards[5] = cardStack[j];
+                        cardOut[roun].cards[6] = cardStack[k];
+                        cardOut[roun].cards[7] = cardStack[k];
+                        cardOut[roun].cards[8] = cardStack[p];
+                        cardOut[roun].cards[9] = cardStack[p];
+                        cardOut[roun].id = 1;
+                        rounds[roun] = 9;
                         lChu[++lSize] = i;
                         cntE[p]-=2;
                         totE-=10;
@@ -1104,20 +966,46 @@ void beat2(){ //急需优化
     if (canChu == 0){
         if (totM<=10){
             if (!Save()){
-                if (lang == 1) cout<<"要不起"<<endl;
-                else if (lang == 2) cout<<"Can't afford"<<endl;
+                if (lang == 1){
+                    cout<<"要不起"<<endl;
+                    cardOut[roun].cards[0] = "要不起";
+                    cardOut[roun].id = 1;
+                    rounds[roun] = 0;
+                }
+                else if (lang == 2){
+                    cout<<"Can't afford"<<endl;
+                    cardOut[roun].cards[0] = "Can't afford";
+                    cardOut[roun].id = 1;
+                    rounds[roun] = 0;
+                }
                 lMode = 0;
                 lLen = 0;
             }
         }
         else{
-            if (lang == 1) cout<<"要不起"<<endl;
-            else if (lang == 2) cout<<"Can't afford"<<endl;
+            if (lang == 1){
+                cout<<"要不起"<<endl;
+                cardOut[roun].cards[0] = "要不起";
+                cardOut[roun].id = 1;
+                rounds[roun] = 0;
+            }
+            else if (lang == 2){
+                cout<<"Can't afford"<<endl;
+                cardOut[roun].cards[0] = "Can't afford";
+                cardOut[roun].id = 1;
+                rounds[roun] = 0;
+            }
             lMode = 0;
             lLen = 0;
         }
     }
     else ifChun++;
+    if (!lMode) return;
+    if (lang == 1) printf("对手出了: ");
+    else if (lang == 2) printf("Rival has put: ");
+    for (int i=0;i<=rounds[roun];i++){
+        cout<<cardOut[roun].cards[i]<<" ";
+    }
 }
 void pre(){
     initBeat();
@@ -1126,8 +1014,8 @@ void pre(){
     else if (lang == 2) printf("Want to be the landlord?: 1.Very 2.Fine 3.Maybe 4.Definitely Not\n");
     char iwant;
     scanf("%s",&iwant);
-    system("cls");
-    if (iwant == 't' || iwant == 'T'){
+    if (cl) clearScr();
+    if ((iwant == 't' || iwant == 'T') && ifGod == 1){
         totM = 0;
         termi = 1;
         return;
@@ -1202,18 +1090,30 @@ void pre(){
     if (ifGod == 1){
         if (lang == 1) printf("对手的牌: ");
         else if (lang == 2) printf("Rival's Cards: ");
-        for (int i=0;i<15;i++) for (int j=0;j<cntM[i];j++) cout<<cardStack[i]<<" ";
+        for (int i=0;i<15;i++){
+            for (int j=0;j<cntE[i];j++){
+                cout<<cardStack[i]<<" ";
+            }
+        }
         printf("\n");
     }
+    int pos = 0;
+    for (int i=0;i<15;i++){
+        for (int j=0;j<cntE[i];j++){
+            cardOut[roun].cards[pos] = cardStack[i];
+            pos++;
+        }
+    }
+    rounds[roun] = pos-1;
     if (who == 1){
+        roun++;
         mode = 11;
-        if (lang == 1) printf("对手出了: ");
-        else if (lang == 2) printf("Rival has put: ");
         if (dif == 1) beat();
         else if (dif == 2) beat2();
     }
     char t[10];
     gets(t);
+    cout<<endl;
 }
 int findCuo(){
     mode = calc();
@@ -1264,8 +1164,14 @@ void ingame(){
         if (termi) return;
     }
     char ou[105];
-    cin.getline(ou,105);
-    system("cls");
+    cin.getline(ou,100);
+    if (cl) clearScr();
+    if (ou[0] == 'w'){
+        creErr();
+        totM = 0;
+        termi = 1;
+        return;
+    }
     if ((ou[0] == 't' || ou[0] == 'T' || ou[0] == 'e' || ou[0] == 'E') && ifGod == 1){
         totM = 0;
         termi = 1;
@@ -1274,14 +1180,17 @@ void ingame(){
     if (ou[0] == -46 || ou[0] == '0' || ou[0] == 'C' || ou[0] == 'c'){
         Ou[0] = -46;
         mode = 11;
-        if (lang == 1) printf("对手出了: ");
-        else if (lang == 2) printf("Rival has put: ");
         if (dif == 1) beat();
         else if (dif == 2) beat2();
         return;
     }
     lenOU = strlen(ou);
-    int size = -1,fakeLen = lenOU,tag,basket[105] = {},Cuo = 0;
+    if (lenOU == 0){
+        if (lang == 1) printf("你还没有出牌\n");
+        else if (lang == 2) printf("You have not put any cards yet\n");
+        return;
+    }
+    int Size = -1,fakeLen = lenOU,tag,basket[105] = {},Cuo = 0;
     memset(lenColl,0,sizeof(lenColl));
     Max = 0;
     boKing = 0;
@@ -1292,32 +1201,32 @@ void ingame(){
             continue;
         }
         else if (ou[i] > '1' && ou[i] <= '9'){
-            if (ou[i] == '2') Ou[++size] = 12;
-            else Ou[++size] = ou[i] - '0' - 3;
+            if (ou[i] == '2') Ou[++Size] = 12;
+            else Ou[++Size] = ou[i] - '0' - 3;
         }
-        else if (ou[i] == 'J' || ou[i] == 'j') Ou[++size] = 8;
-        else if (ou[i] == 'Q' || ou[i] == 'q') Ou[++size] = 9;
+        else if (ou[i] == 'J' || ou[i] == 'j') Ou[++Size] = 8;
+        else if (ou[i] == 'Q' || ou[i] == 'q') Ou[++Size] = 9;
         else if (ou[i] == 'K' || ou[i] == 'k'){
             if (i!=fakeLen-1){
                 if (ou[i+1] == 'I' || ou[i+1] == 'i'){
-                    Ou[++size] = 14;
+                    Ou[++Size] = 14;
                     lenOU -= 3;
                     tag = 1;
                     i += 3;
                 }
-                else Ou[++size] = 10;
+                else Ou[++Size] = 10;
             }
-            else Ou[++size] = 10;
+            else Ou[++Size] = 10;
         }
-        else if (ou[i] == 'A' || ou[i] == 'a') Ou[++size] = 11;
+        else if (ou[i] == 'A' || ou[i] == 'a') Ou[++Size] = 11;
         else if (ou[i] == 'S' || ou[i] == 's'){
-            Ou[++size] = 13; //对应SMALL
+            Ou[++Size] = 13; //对应SMALL
             lenOU -= 4;
             i += 4;
         }
         else if (ou[i] == '1' && i+1<fakeLen){
             if (ou[i+1] == '0'){
-                Ou[++size] = 7; //对应10
+                Ou[++Size] = 7; //对应10
                 lenOU -= 1;
                 i += 1;
             }
@@ -1336,21 +1245,24 @@ void ingame(){
             if (basket[13] > Max) Max = basket[13];
         }
         else{
-            basket[Ou[size]] += 1; // 负责计算最大相同数
-            if (basket[Ou[size]] > Max) Max = basket[Ou[size]]; //需要将KING和SMALL包含进去
+            basket[Ou[Size]] += 1; // 负责计算最大相同数
+            if (basket[Ou[Size]] > Max) Max = basket[Ou[Size]]; //需要将KING和SMALL包含进去
         }
-        if (cntM[Ou[size]] == 0){
+        if (cntM[Ou[Size]] == 0){
             Cuo = 1;
-            size--;
+            Size--;
             if (!ifGod) break;
         }
         else{
-            cntM[Ou[size]]--;
+            cntM[Ou[Size]]--;
             totM--;
         }
     }
+    if (!Cuo) sort(Ou,Ou+Size);
     int cont = 0,flag = 2;
+    sma = 1000;
     for (int i=0;i<15;i++){
+        if (basket[i]>=3) sma = min(sma,i);
         if (basket[i]!=0) lenColl[basket[i]]++;
         if (flag == 2 && basket[i] == 3 && plaType == 1) flag = 1;
         if (flag == 1 && basket[i]!=3 && plaType == 1) flag = 0;
@@ -1361,7 +1273,7 @@ void ingame(){
     if (Cuo == 0) Cuo = findCuo();
     if (Cuo == 0 && lMode != 0){
         int tmpcnt = 0;
-        for (int i=0;i<=size;i++){
+        for (int i=0;i<=Size;i++){
             if (Ou[i] > lChu[lSize]){
                 tmpcnt++;
             }
@@ -1371,15 +1283,29 @@ void ingame(){
     }
     if (ifGod) Cuo = 0;
     if (Cuo == 1){
-        for (int i=size;i>=0;i--){
-            cntM[Ou[size--]]++;
+        for (int i=Size;i>=0;i--){
+            cntM[Ou[Size--]]++;
             totM++;
         }
         if (lang == 1) printf("牌出错了\n");
         else if (lang == 2) printf("Wrong Card!\n");
-        ingame();
+        if (roun == 0) return;
+        if (lang == 1) printf("对手出了: ");
+        else if (lang == 2) printf("Rival has put: ");
+        for (int i=0;i<=rounds[roun];i++){
+            cout<<cardOut[roun].cards[i]<<" ";
+        }
+        return;
     }
     else{
+        roun++;
+        int flen = strlen(ou);
+        for (int i=0;i<=Size;i++){
+            cardOut[roun].cards[i] = cardStack[Ou[i]];
+        }
+        cardOut[roun].id = 2;
+        rounds[roun] = lenOU;
+        roun++;
         if (totM == 0){
             if (mode == 5 || mode == 12) sco*=2;
             else if (mode == 13) sco*=3;
@@ -1389,8 +1315,6 @@ void ingame(){
             return;
         }
         else{
-            if (lang == 1) printf("对手出了: ");
-            else if (lang == 2) printf("Rival has put: ");
             if (dif == 1) beat();
             else if (dif == 2) beat2();
         }
@@ -1452,17 +1376,17 @@ void hel(){
     else if (lang == 2) printf("1.Rules 2.Settings 3.Back\n");
     int uc;
     scanf("%d",&uc);
-    system("cls");
+    if (cl) clearScr();
     if (uc == 1) rules();
     else if (uc == 2) sett();
     if (uc == 3) return;
     else hel();
 }
 void about(){
-    if (lang == 1) printf("发行日期: 8/10/2021\n");
-    else if (lang == 2) printf("Release Date: 8/10/2021\n");
-    if (lang == 1) printf("版本号: 2.2.7\n");
-    else if (lang == 2) printf("Ver: 2.2.7\n");
+    if (lang == 1) printf("发行日期: 8/19/2021\n");
+    else if (lang == 2) printf("Release Date: 8/19/2021\n");
+    if (lang == 1) printf("版本号: 2.2.9\n");
+    else if (lang == 2) printf("Ver: 2.2.9\n");
     if (edi == 'n'){
         if (lang == 1) printf("C++正式版\n");
         else if (lang == 2) printf("C++ stable channel\n");
@@ -1497,7 +1421,7 @@ void about(){
 }
 void acheive(){ //未优化
     if (lang == 1) printf("你已达成的成就:\n");
-    else if (lang == 2) printf("The achievements you have reached\n");
+    else if (lang == 2) printf("The achievements you have reached:\n");
     int f = 0;
     for (int i=1;i<=18;i++){
         if (ach[i].ifGet == 1){
@@ -1516,6 +1440,8 @@ void acheive(){ //未优化
                 else printf("th ");
                 cout<<ach[i].yr<<endl;
             }
+            if (lang == 1) cout<<"你曾经: "<<descripCN[i]<<endl<<endl;
+            else if (lang == 2) cout<<"You once: "<<descripEN[i]<<endl<<endl;
             printf("\n");
             f = 1;
         }
@@ -1549,14 +1475,14 @@ void acheive(){ //未优化
     char uc[10];
     cin.getline(uc,10);
     printf("\n");
-    system("cls");
+    if (cl) clearScr();
     return;
 }
 void language(){
     printf("1.中文\n2.English\n");
     scanf("%d",&lang);
     printf("\n");
-    system("cls");
+    if (cl) clearScr();
 }
 void option(){
     if (lang == 1) printf("1.上帝模式: ");
@@ -1583,42 +1509,52 @@ void option(){
         if (lang == 1) printf("宽泛\n");
         else if (lang == 2) printf("Loose\n");
     }
-    if (lang == 1) printf("4.重置游戏\n");
-    else if (lang == 2) printf("4.Reset Game\n");
-    if (lang == 1) printf("5.返回\n");
-    else if (lang == 2) printf("5.Back\n");
+    if (lang == 1) printf("4.显示模式：");
+    else if (lang == 2) printf("4.Display Mode:");
+    if (cl == 1){
+        if (lang == 1) printf("简短\n");
+        else if (lang == 2) printf("Short\n");
+    }
+    else if (cl == 0){
+        if (lang == 1) printf("完整\n");
+        else if (lang == 2) printf("Complete\n");
+    }
+    if (lang == 1) printf("5.重置游戏\n");
+    else if (lang == 2) printf("5.Reset Game\n");
+    if (lang == 1) printf("6.返回\n");
+    else if (lang == 2) printf("6.Back\n");
     int uc;
     scanf("%d",&uc);
-    system("cls");
+    if (cl) clearScr();
     if (uc == 1){
         if (lang == 1) printf("按1以启用，按0以禁用\n");
         else if (lang == 2) printf("Press 1 to enable, 0 to disable\n");
-        scanf("%d",&uc);
-        if (uc == 1) ifGod = 1;
-        else ifGod = 0;
+        scanf("%d",&ifGod);
     }
     else if (uc == 2){
         if (lang == 1) printf("1.简单 2.增强型\n");
         else if (lang == 2) printf("1.Easy 2.Enhanced\n");
-        scanf("%d",&uc);
-        if (uc == 1) dif = 1;
-        else dif = 2;
+        scanf("%d",&dif);
     }
     else if (uc == 3){
         if (lang == 1) printf("1.经典(只能出连着的牌) 2.宽泛(只要牌型一样即可)\n");
         else if (lang == 2) printf("1.Classic(The cards must be continuous) 2.Loose(As long as it fits the style of Classic)\n");
-        scanf("%d",&uc);
-        if (uc == 1) plaType = 1;
-        else plaType = 2;
+        scanf("%d",&plaType);
     }
     else if (uc == 4){
+        if (lang == 1) printf("1.简短 2.完整\n");
+        else if (lang == 2) printf("1.Short 2.Complete\n");
+        scanf("%d",&cl);
+        if (cl == 2) cl = 0;
+    }
+    else if (uc == 5){
         if (lang == 1) printf("你真的想要删除所有数据吗?\n1.是  2.否\n");
         else if (lang == 2) printf("Do you really want to delete all saves?\n1.Yes  2.No\n");
         scanf("%d",&uc);
         if (uc == 1) Back();
     }
     printf("\n");
-    system("cls");
+    if (cl) clearScr();
 }
 void markAch(int i){
     if (lang == 1) cout<<"达成成就: "<<achCNStack[i]<<endl;
@@ -1682,14 +1618,14 @@ void stat(){
         gets(uc);
         cin.getline(uc,10);
         printf("\n");
-        system("cls");
+        if (cl) clearScr();
         return;
     }
     if (lang == 1) printf("1.修改点数\n2.修改成就达成情况\n3.返回\n");
     else if (lang == 2) printf("1.Modify Credits\n2.Modify Acheivements\n3.Back\n");
     long long uc;
     scanf("%lld",&uc);
-    system("cls");
+    if (cl) clearScr();
     if (uc == 1){
         if (lang == 1) printf("想要修改为: ");
         else if (lang == 2) printf("Want to change to: ");
@@ -1794,7 +1730,7 @@ void nbdata(int i){
 void notboard(){ //未优化
     int uc = 4,page = 7,ifRead = 1;
     while (uc!=3){
-        system("cls");
+        if (cl) clearScr();
         if (uc == 2){
             if (page>=maxPage){
                 if (lang == 1) printf("已是最前一页!\n");
@@ -1831,12 +1767,12 @@ void notboard(){ //未优化
 void runPro(){
     writeVars();
     ifJiao = 0;
-    system("cls");
-    if (lang == 1) printf("1.开始\n2.语言/Language\n3.选项\n4.公告\n5.成就\n6.统计\n7.帮助\n8.关于\n9.退出\n");
-    else if (lang == 2) printf("1.Start\n2.Language/语言\n3.Options\n4.Notice\n5.Acheivements\n6.Statistics\n7.Help\n8.About\n9.Quit\n");
+    if (cl) clearScr();
+    if (lang == 1) printf("1.开始\n2.语言/Language\n3.生成错误报告\n4.选项\n5.公告\n6.成就\n7.统计\n8.帮助\n9.关于\n10.退出\n");
+    else if (lang == 2) printf("1.Start\n2.Language/语言\n3.Create Error Report\n4.Options\n5.Notice\n6.Acheivements\n7.Statistics\n8.Help\n9.About\n10.Quit\n");
     scanf("%d",&usercho);
-    system("cls");
-   if (usercho == 1){
+    if (cl) clearScr();
+    if (usercho == 1){
        Clear();
        ran(); //发牌和排序函数
        while (totM > 0 && totE > 0) ingame();
@@ -1845,8 +1781,7 @@ void runPro(){
            else if (lang == 2) printf("You have terminated this game earlier than expected, the scores made in this game won't be recorded.\n");
            char uc[4];
            cin.getline(uc,4);
-           gets(uc);
-           system("cls");
+           if (cl) clearScr();
            return;
        }
        if (ifChun == 1){
@@ -1880,16 +1815,17 @@ void runPro(){
        char uc[2];
        gets(uc);
    }
-   else if (usercho == 2) language();
-   else if (usercho == 3) option();
-   else if (usercho == 4) notboard();
-   else if (usercho == 5) acheive();
-   else if (usercho == 6) stat();
-   else if (usercho == 7) hel();
-   else if (usercho == 8) about();
+    else if (usercho == 2) language();
+    else if (usercho == 3) creErr();
+    else if (usercho == 4) option();
+    else if (usercho == 5) notboard();
+    else if (usercho == 6) acheive();
+    else if (usercho == 7) stat();
+    else if (usercho == 8) hel();
+    else if (usercho == 9) about();
 }
 int main(){
     readVars();
-    while (usercho != 9) runPro();
+    while (usercho != 10) runPro();
     return 0;
 }
