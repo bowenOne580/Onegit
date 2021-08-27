@@ -285,6 +285,14 @@ void creErr(){
     if (lang == 1) output<<"本次出牌记录如下："<<endl;
     else if (lang == 2) output<<"Rival's way of putting cards is recorded as following: "<<endl;
     for (int i=0;i<=roun;i++){
+        if (i == 0){
+            if (lang == 1) output<<"对手的牌：";
+            else if (lang == 2) output<<"Rival's cards: ";
+        }
+        if (i == 1){
+            if (lang == 1) output<<"你的牌：";
+            else if (lang == 2) output<<"Your cards: ";
+        }
         if (cardOut[i].id == 1){
             if (lang == 1) output<<"对手出牌：";
             else if (lang == 2) output<<"Rival has put: ";
@@ -1105,6 +1113,15 @@ void pre(){
         }
     }
     rounds[roun] = pos-1;
+    roun++;
+    pos = 0;
+    for (int i=0;i<15;i++){
+        for (int j=0;j<cntM[i];j++){
+            cardOut[roun].cards[pos] = cardStack[i];
+            pos++;
+        }
+    }
+    rounds[roun] = pos-1;
     if (who == 1){
         roun++;
         mode = 11;
@@ -1383,17 +1400,17 @@ void hel(){
     else hel();
 }
 void about(){
-    if (lang == 1) printf("发行日期: 8/19/2021\n");
-    else if (lang == 2) printf("Release Date: 8/19/2021\n");
-    if (lang == 1) printf("版本号: 2.2.9\n");
-    else if (lang == 2) printf("Ver: 2.2.9\n");
+    if (lang == 1) printf("发行日期: 8/27/2021\n");
+    else if (lang == 2) printf("Release Date: 8/27/2021\n");
+    if (lang == 1) printf("版本号: 2.3.0\n");
+    else if (lang == 2) printf("Ver: 2.3.0\n");
     if (edi == 'n'){
-        if (lang == 1) printf("C++正式版\n");
-        else if (lang == 2) printf("C++ stable channel\n");
+        if (lang == 1) printf("正式版\n");
+        else if (lang == 2) printf("Stable Channel\n");
     }
     else if (edi == 'b'){
-        if (lang == 1) printf("C++测试版\n");
-        else if (lang == 2) printf("C++ beta channel\n");
+        if (lang == 1) printf("测试版\n");
+        else if (lang == 2) printf("Beta Channel\n");
     }
     else if (edi == 'a'){
         if (lang == 1) printf("周年纪念版\n");
@@ -1411,6 +1428,11 @@ void about(){
         if (lang == 1) printf("7.6告别版\n");
         else if (lang == 2) printf("July 6th Say Goodbye Edition\n");
     }
+    printf("\n");
+    if (lang == 1) printf("此程序受MIT许可证约束\n");
+    else if (lang == 2) printf("This program is protected under the MIT License\n");
+    printf("Copyright (c) 2021 Bowen Wan\n");
+    printf("\n");
     if (lang == 1) printf("如果你遇到了任何问题，请联系开发者\n项目主页: https://github.com/bowenOne580/Onegit/tree/斗地主项目 \nQQ: 2797269898\n");
     else if (lang == 2) printf("If you meet any kind of problem(s), please feel free to contact the developer.\nProject Homepage: https://github.com/bowenOne580/Onegit/tree/斗地主项目 \nQQ: 2797269898\n");
     if (lang == 1) printf("按任意键以返回\n");
