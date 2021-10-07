@@ -12,6 +12,9 @@ struct carO{
     string cards[25];
     int id;
 } cardOut[105];
+struct acheivement{
+    int ifGet,day,mon,yr;
+} ach[1005];
 string cardStack[20] = {"3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2", "SMALL","KING"};
 string achCNStack[25] = {
         "","春天到了","第一场胜仗","常胜将军","无坚不摧","胜败乃兵家常事","即生瑜，何生亮","小康","富翁","富可敌国",
@@ -32,9 +35,6 @@ string descripEN[25] = {
         "Finish 5 games in the 1st Anniversary Edition","Finish one game in E3 Special Edition","Finish 10 games in Steam Summer Sale Special Edition"};
 string achMonCN[20] = {"元","二","三","四","五","六","七","八","九","十","十一","十二"};
 string achMonEN[20] = {"January","February","March","April","May","June","July","August","September","October","November","December"};
-struct acheivement{
-    int ifGet,day,mon,yr;
-} ach[1005];
 void readVars(){
     ifstream input("data.txt");
     input>>money>>hisco>>lang>>ifGod>>win>>lose>>dif;
@@ -1444,10 +1444,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 9/28/2021\n");
-    else if (lang == 2) printf("Release Date: 9/28/2021\n");
-    if (lang == 1) printf("版本信息: 2.4.0 ");
-    else if (lang == 2) printf("Version: 2.4.0 ");
+    if (lang == 1) printf("发行日期: 10/7/2021\n");
+    else if (lang == 2) printf("Release Date: 10/7/2021\n");
+    if (lang == 1) printf("版本信息: 2.4.1");
+    else if (lang == 2) printf("Version: 2.4.1");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
