@@ -1,7 +1,0 @@
-Very important:
-1.在正确的时机出大牌或炸弹以增加获胜几率
-2.增加机遇系统以增强出牌（Nearly there）
-Need to fix:
-1.查找新出牌系统中的各种bug
-Upcoming:
-None
