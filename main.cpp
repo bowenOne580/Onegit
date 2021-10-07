@@ -4,9 +4,9 @@ int cardNum[20] = {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1},lenOU,sumOU,Ou[1
 int Max,cntE[20],cntM[20],cntB[5],totM = 17,totE = 17,mode,lMode,boKing,sco = 100,hisco = 0;
 int lChu[100],lSize,ifChun = 1,lLen,lang = 1,ifGod,dif = 2,ifJiao = 0,win,lose;
 int chun,lenColl[20],maxPage = 7,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],oppor,speGame;
-int haDou,haSin,plaType = 1,calcThree[20],termi,usercho,rating,sma,roun,rounds[105],cl = 1;
-int cntAch = 20;
-char edi = 'n';
+int haDou,haSin,plaType = 1,calcThree[20],termi,rating,sma,roun,rounds[105],cl = 1;
+int cntAch = 18,usc,usercho;
+char edi = 'n',uc[10];
 long long money = 3000;
 struct carO{
     string cards[25];
@@ -78,7 +78,6 @@ void Back(){
     for (int i=1;i<=cntAch;i++) ach[i].ifGet = 0;
 }
 void nextPage(){
-    char uc[10];
     getchar();
     cin.getline(uc,10);
     if (cl) clearScr();
@@ -1180,7 +1179,6 @@ void ingame(){
     if (cl) clearScr();
     if (ou[0] == 'w'){
         creErr();
-        char uc[10];
         cin.getline(uc,5);
         totM = 0;
         termi = 1;
@@ -1333,64 +1331,64 @@ void ingame(){
     }
 }
 void rules(){
-    int uc = 0;
-    while (uc!=16){
-        if (uc!=0) nextPage();
+    usc = 0;
+    while (usc!=16){
+        if (usc!=0) nextPage();
         if (lang == 1) printf("想要查询哪个规则?\n");
         else if (lang == 2) printf("Which rule do you want to learn about?\n");
         if (lang == 1) printf("1.单牌\n2.对子\n3.三不带\n4.三带一\n5.三带二\n6.炸弹\n7.小飞机\n8.中飞机\n9.大飞机\n10.顺子\n11.连对\n12.四带二\n13.牌的大小\n14.决出胜负\n15.春天\n16.返回\n");
         else if (lang == 2) printf("1.Single Card\n2.Double Cards\n3.Triple Cards\n4.Three And One\n5.Three And Two\n6.Bomb\n7.Micro Plane\n8.Middle Plane\n9.Big Plane\n10.Silk Road\n11.Silk Road on Sea\n12.Gone With The Bomb\n13.Card Compare\n14.Winner Or Loser\n15.Spring\n16.Back\n");
-        scanf("%d",&uc);
+        scanf("%d",&usc);
         if (cl) clearScr();
-        if (uc == 1){
+        if (usc == 1){
             if (lang == 1) printf("1.单牌：你可以出比对手的牌数值更大的1张牌\n");
             else if (lang == 2) printf("1.Single Card: You can put 1 card that is strictly bigger than Rival's\n");
         }
-        else if (uc == 2){
+        else if (usc == 2){
             if (lang == 1) printf("2.对子：你可以出比对手的牌数值更大的2张牌，但它们在数值上必须相等\n");
             else if (lang == 2) printf("2.Double Cards: You can put 2 cards with the same point, and they are strictly bigger than Rival's\n");
         }
-        else if (uc == 3){
+        else if (usc == 3){
             if (lang == 1) printf("3.三不带：你可以出比对手牌值更大的三张牌，但它们在数值上必须相等\n");
             else if (lang == 2) printf("3.Triple Cards: You can put 3 cards with the same point, and they are strictly bigger than Rival's\n");
         }
-        else if (uc == 4){
+        else if (usc == 4){
             if (lang == 1) printf("4.三带一：你可以出4张牌，其中三张牌的数值必须相同且大于对手所出的三张牌的数值\n");
             else if (lang == 2) printf("4.Three Plus One: You can put 3 cards with the same point, and they are strictly bigger than Rival's,the other one can be anything you like\n");
         }
-        else if (uc == 5){
+        else if (usc == 5){
             if (lang == 1) printf("5.三带二：你可以出5张牌，其中包含3张一样的和一个对子\n");
             else if (lang == 2) printf("5.Three Plus Two: You can put 5 cards, three of them is like that of Triple Cards, and they are strictly bigger than Rival's, the other two is like a Double Cards\n");
         }
-        else if (uc == 6){
+        else if (usc == 6){
             if (lang == 1) printf("6.炸弹：分为两种，王炸和四张相同的牌，王炸指SMALL+KING。炸弹可以压过所有不是炸弹的牌，数值更大的炸弹可以压过小的，王炸可以压过任意牌\n");
             else if (lang == 2) printf("6.Bomb：It can be 4 cards that have the same point, if the Rival put a bomb, they must be strictly bigger than Rival's bomb. SMALL+KING is also a bomb, which is the biggest cards in this game\n");
         }
-        else if (uc == 7){
+        else if (usc == 7){
             if (lang == 1) printf("7.小飞机：你可以出6张牌，其中包含两组3张一样的且牌数差为1\n");
             else if (lang == 2) printf("7.Micro Plane: You can put 6 cards, which contain two sets of Three Cards\n");
         }
-        else if (uc == 8){
+        else if (usc == 8){
             if (lang == 1) printf("8.中飞机：你可以出8张牌，包含一个小飞机和任意两张牌\n");
             else if (lang == 2) printf("8.Middle Plane: You can put 8 cards, which contain a Micro Plane and two cards of whatever you like\n");
         }
-        else if (uc == 9){
+        else if (usc == 9){
             if (lang == 1) printf("9.大飞机：你可以出10张牌，其中包含一个小飞机和两个对子\n");
             else if (lang == 2) printf("9.Big Plane: You can put 10 cards, contain a Micro Plane and two sets of Double Cards\n");
         }
-        else if (uc == 10){
+        else if (usc == 10){
             if (lang == 1) printf("10.顺子：你可以出大于等于5张牌，其中每张牌间的差为1\n");
             else if (lang == 2) printf("10.Silk Road：You can put 5 or more than 5 cards, the difference of every two continuous cards must be the same\n");
         }
-        else if (uc == 11){
+        else if (usc == 11){
             if (lang == 1) printf("11.连对：你可以出大于6张牌，其中包含3个以上的对子，且每个对子间的差为1\n");
             else if (lang == 1) printf("11.Silk Road on Sea：You can put more than 3 Double Cards, the difference of every two continuous Double Cards must be the same\n");
         }
-        else if (uc == 12){
+        else if (usc == 12){
             if (lang == 1) printf("12.四带二：你可以出一个炸弹外加两张单牌或两个对子\n");
             else if (lang == 2) printf("12.Gone With The Bomb: A bomb and two Single Card or two Double Cards\n");
         }
-        else if (uc == 13){
+        else if (usc == 13){
             if (lang == 1) printf("13.牌的大小：3 < 4 < 5 < 6 < 7 < 8 < 9 < 10 < J < Q < K < A < 2 < SMALL < KING\n");
             else if (lang == 2) printf("13.Cards Compare: 3 < 4 < 5 < 6 < 7 < 8 < 9 < 10 < J < Q < K < A < 2 < SMALL < KING\n");
             if (lang == 1) printf("           炸弹大于任何不是炸弹的牌，王炸最大\n");
@@ -1398,38 +1396,38 @@ void rules(){
             if (lang == 1) printf("           如果你没有更大的牌，请出‘要不起’或‘0’\n");
             else if (lang == 2) printf("                  If you don't have a bigger one, please put ‘Can't afford’ or ‘0’\n");
         }
-        else if (uc == 14){
+        else if (usc == 14){
             if (lang == 1) printf("14.决出胜负：如果一方先把所有牌出完，即胜利\n");
             else if (lang == 2) printf("14.Winner Or Loser: If you put all your cards earlier than Rival, you win, otherwise you lose\n");
         }
-        else if (uc == 15){
+        else if (usc == 15){
             if (lang == 1) printf("15.春天：如果你是地主，并且一次性将所有牌都出完，对手没有一次出牌机会，将获得春天加倍奖励\n");
             else if (lang == 2) printf("15.Spring: If you are the landlord and put all of you cards in a row so that the Rival can't get any chance to put any cards, you do a Spring, and you will get bonus for it\n");
-            if (lang == 1) printf("        如果你是农名，并且只让对手出了一次牌，你将获得同样得奖励\n");
+            if (lang == 1) printf("        如果你是农民，并且只让对手出了一次牌，你将获得同样得奖励\n");
             else if (lang == 2) printf("           If you aren't a Landlord and only give one chance to the Rival, youn will receive the same bonus\n");
         }
     }
     return;
 }
 void sett(){ //待完善
-    int uc = 0;
-    while (uc!=4) {
-        if (uc != 0) nextPage();
+    usc = 0;
+    while (usc!=4) {
+        if (usc != 0) nextPage();
         if (lang == 1) printf("想要查询哪个设置?\n");
         else if (lang == 2) printf("Which setting do you want to learn about?\n");
         if (lang == 1) printf("1.上帝模式\n2.难度\n3.飞机模式\n4.返回\n");
         else if (lang == 2) printf("1.God Mode\n2.Difficulty\n3.Plane Mode\n4.Back\n");
-        scanf("%d",&uc);
+        scanf("%d",&usc);
         if (cl) clearScr();
-        if (uc == 1){
+        if (usc == 1){
             if (lang == 1) printf("1.上帝模式：可以看见对手的牌，无视出牌中的错误，并且可以用‘t’终止游戏\n");
             else if (lang == 2) printf("1.God Mode: If enabled, you can see The Rival's cards, ignore any kind of error in putting, and you can even use 't' to terminate current game\n");
         }
-        else if (uc == 2){
+        else if (usc == 2){
             if (lang == 1) printf("2.难度：简单难度下，对手只会进行最基本的接牌、出牌；而增强型出牌可以让对手更有策略性，择优接牌，尽多出牌\n");
             else if (lang == 2) printf("2.Difficulty: In easy mode,The Rival only put and take the smallest cards; but enhanced mode let The Rival use some strategies, take least costing cards and put cards as much as possible\n");
         }
-        else if (uc == 3){
+        else if (usc == 3){
             if (lang == 1) printf("3.飞机模式：在选项中已进行详述，在此不再赘述\n");
             else if (lang == 2) printf("3.Plane Mode: There are descriptions in Options, please go there for more details\n");
         }
@@ -1438,12 +1436,11 @@ void sett(){ //待完善
 void hel(){
     if (lang == 1) printf("1.游戏规则 2.各项设置 3.返回\n");
     else if (lang == 2) printf("1.Rules 2.Settings 3.Back\n");
-    int uc;
-    scanf("%d",&uc);
+    scanf("%d",&usc);
     if (cl) clearScr();
-    if (uc == 1) rules();
-    else if (uc == 2) sett();
-    if (uc == 3) return;
+    if (usc == 1) rules();
+    else if (usc == 2) sett();
+    if (usc == 3) return;
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
@@ -1485,12 +1482,12 @@ void about(){ //可以用数组表示edition以使代码更美观
     nextPage();
     return;
 }
-void acheive(){ //需要重新设计页面
-    if (lang == 1) printf("你已达成的成就:\n");
-    else if (lang == 2) printf("The achievements you have reached:\n");
+void acheive(){
     int f = 0;
-    for (int i=1;i<=18;i++){
+    for (int i=1;i<=cntAch;i++){
         if (ach[i].ifGet == 1){
+            if (lang == 1) printf("已达成的成就:\n");
+            else if (lang == 2) printf("Unlocked Achievements:\n");
             if (lang == 1) cout<<achCNStack[i]<<endl;
             else if (lang == 2) cout<<achENStack[i]<<endl;
             if (lang == 1){
@@ -1506,41 +1503,40 @@ void acheive(){ //需要重新设计页面
                 else printf("th ");
                 cout<<ach[i].yr<<endl;
             }
-            if (lang == 1) cout<<"你曾经: "<<descripCN[i]<<endl<<endl;
-            else if (lang == 2) cout<<"You once: "<<descripEN[i]<<endl<<endl;
-            printf("\n");
+            if (lang == 1) cout<<"你曾经: "<<descripCN[i]<<endl;
+            else if (lang == 2) cout<<"You once: "<<descripEN[i]<<endl;
+            if (!f) gets(uc);
             f = 1;
+            cin.getline(uc,2);
+            if (cl) clearScr();
         }
     }
     if (!f){
-        if (lang == 1) printf("无\n\n");
-        else if (lang == 2) printf("None\n\n");
+        if (lang == 1) printf("已达成的成就:无\n");
+        else if (lang == 2) printf("Unlocked Achievements:None\n");
+        gets(uc);
     }
     f = 0;
-    if (lang == 1) printf("按任意键以继续查看\n");
-    else if (lang == 2) printf("Press any key to access more information\n");
-    char uc2[10];
-    gets(uc2);
-    cin.getline(uc2,10);
-    printf("\n");
-    if (lang == 1) printf("未解锁的成就:\n");
-    else if (lang == 2) printf("Locked Achievements:\n");
-    for (int i=1;i<=18;i++){
+    if (lang == 1) printf("按任意键以查看未解锁成就\n");
+    else if (lang == 2) printf("Press any key to see locked achievements\n");
+    gets(uc);
+    if (cl) clearScr();
+    for (int i=1;i<=cntAch;i++){
         if (ach[i].ifGet == 0){
-            if (lang == 1) cout<<achCNStack[i]<<endl<<"解锁条件: "<<descripCN[i]<<endl<<endl;
-            else if (lang == 2) cout<<achENStack[i]<<endl<<"Unlock Way: "<<descripEN[i]<<endl<<endl;
+            if (lang == 1) printf("未解锁的成就:\n");
+            else if (lang == 2) printf("Locked Achievements:\n");
+            if (lang == 1) cout<<achCNStack[i]<<endl<<"解锁条件: "<<descripCN[i]<<endl;
+            else if (lang == 2) cout<<achENStack[i]<<endl<<"Unlock Way: "<<descripEN[i]<<endl;
             f = 1;
+            gets(uc);
+            if (cl) clearScr();
         }
     }
     if (!f){
-        if (lang == 1) printf("祝贺!你已解锁全部成就!\n\n");
-        else if (lang == 2) printf("Congratulations! You have unlocked all of them!\n\n");
+        if (lang == 1) printf("祝贺!你已解锁全部成就!\n");
+        else if (lang == 2) printf("Congratulations! You have unlocked all of them!\n");
+        gets(uc);
     }
-    char uc[10];
-    cin.getline(uc,10);
-    printf("\n");
-    if (cl) clearScr();
-    return;
 }
 void language(){
     printf("1.中文\n2.English\n");
@@ -1592,36 +1588,35 @@ void option(){
     else if (lang == 2) printf("5.Reset Game\n");
     if (lang == 1) printf("6.返回\n");
     else if (lang == 2) printf("6.Back\n");
-    int uc;
-    scanf("%d",&uc);
+    scanf("%d",&usc);
     if (cl) clearScr();
-    if (uc == 1){
+    if (usc == 1){
         if (lang == 1) printf("1.启用 2.禁用\n");
         else if (lang == 2) printf("1.Enable 2.Disable\n");
         scanf("%d",&ifGod);
         if (ifGod != 1) ifGod = 0;
     }
-    else if (uc == 2){
+    else if (usc == 2){
         if (lang == 1) printf("1.简单 2.增强型\n");
         else if (lang == 2) printf("1.Easy 2.Enhanced\n");
         scanf("%d",&dif);
     }
-    else if (uc == 3){
+    else if (usc == 3){
         if (lang == 1) printf("1.经典(只能出连着的牌) 2.宽泛(只要牌型一样即可)\n");
         else if (lang == 2) printf("1.Classic(The cards must be continuous) 2.Loose(As long as it fits the style of Classic)\n");
         scanf("%d",&plaType);
     }
-    else if (uc == 4){
+    else if (usc == 4){
         if (lang == 1) printf("1.简短 2.完整\n");
         else if (lang == 2) printf("1.Short 2.Complete\n");
         scanf("%d",&cl);
         if (cl == 2) cl = 0;
     }
-    else if (uc == 5){
+    else if (usc == 5){
         if (lang == 1) printf("你真的想要删除所有数据吗?\n1.是  2.否\n");
         else if (lang == 2) printf("Do you really want to delete all your data?\n1.Yes  2.No\n");
-        scanf("%d",&uc);
-        if (uc == 1) Back();
+        scanf("%d",&usc);
+        if (usc == 1) Back();
     }
     printf("\n");
     if (cl) clearScr();
@@ -1678,77 +1673,56 @@ void stat(){
         printf("But you lose for %d times\n",lose);
         printf("Possibility of Winning: %d",rating);
     }
-    puts("%\n");
+    puts("%");
     if (!ifGod){
-        if (lang == 1) printf("凡人无法看见此界面上的更多内容\n\n");
-        else if (lang == 2) printf("Only God can have access to this page\n\n");
-        char uc[10];
+        if (lang == 1) printf("凡人无法看见此界面上的更多内容\n");
+        else if (lang == 2) printf("Only God can have access to this page\n");
         gets(uc);
         cin.getline(uc,10);
         printf("\n");
-        if (cl) clearScr();
         return;
     }
     if (lang == 1) printf("1.修改点数\n2.修改成就达成情况\n3.返回\n");
     else if (lang == 2) printf("1.Modify Credits\n2.Modify Acheivements\n3.Back\n");
-    long long uc;
-    scanf("%lld",&uc);
+    scanf("%d",&usc);
     if (cl) clearScr();
-    if (uc == 1){
+    if (usc == 1){
         if (lang == 1) printf("想要修改为: ");
         else if (lang == 2) printf("Want to change to: ");
-        scanf("%lld",&uc);
-        money = uc;
+        scanf("%lld",&money);
     }
-    else if (uc == 2){
+    else if (usc == 2){
         if (lang == 1) printf("修改哪一项成就?(0表示全选)\n");
         else if (lang == 2) printf("Change which acheivement?(0 stands for ALL)\n");
-        scanf("%lld",&uc);
+        scanf("%d",&usc);
         int uc2;
-        if (uc > 0 && uc<=16){
-            if (lang == 1) printf("修改为(1为已达成，0为未达成): ");
-            else if (lang == 2) printf("Change to(1 for acheived, 0 for locked):");
-            scanf("%d",&uc2);
-            if (uc2) markAch(uc);
-            else ach[uc].ifGet = 0;
+        while (usc>cntAch || usc<0){
+            if (lang == 1) printf("暂无此成就，请仔细核对\n\n");
+            else if (lang == 2) printf("This achievement is not available, please check your input carefully\n\n");
+            if (lang == 1) printf("修改哪一项成就?(0表示全选)\n");
+            else if (lang == 2) printf("Change which acheivement?(0 stands for ALL)\n");
+            scanf("%d",&usc);
         }
-        else if (uc == 0){
-            if (lang == 1) printf("修改为(1为已达成，0为未达成): ");
-            else if (lang == 2) printf("Change to(1 for acheived, 0 for locked):");
+        if (lang == 1) printf("修改为(1为已达成，0为未达成): ");
+        else if (lang == 2) printf("Change to(1 for acheived, 0 for locked):");
+        if (usc >= 1 && usc<=cntAch){
             scanf("%d",&uc2);
-            for (int i=1;i<=16;i++){
+            if (uc2) markAch(usc);
+            else ach[usc].ifGet = 0;
+        }
+        else{
+            scanf("%d",&uc2);
+            for (int i=1;i<=cntAch;i++){
                 if (uc2) markAch(i);
                 else ach[i].ifGet = 0;
             }
         }
-        else{
-            while (uc>16 || uc<0){
-                if (lang == 1) printf("暂无此成就，请仔细核对\n\n");
-                else if (lang == 2) printf("This achievement is not available, please check your input carefully\n\n");
-                if (lang == 1) printf("修改哪一项成就?(0表示全选)\n");
-                else if (lang == 2) printf("Change which acheivement?(0 stands for ALL)\n");
-                scanf("%lld",&uc);
-            }
-            int uc2;
-            if (lang == 1) printf("修改为(1为已达成，0为未达成): ");
-            else if (lang == 2) printf("Change to(1 for acheived, 0 for locked):");
-            scanf("%d",&uc2);
-            if (uc != 0 && uc<=16){
-                if (uc2) markAch(uc);
-                else ach[uc].ifGet = 0;
-            }
-            else if (uc == 0){
-                for (int i=1;i<=16;i++){
-                    if (uc2) markAch(i);
-                    else ach[i].ifGet = 0;
-                }
-            }
-        }
     }
-    else if (uc == 3){
+    else if (usc == 3){
         printf("\n");
         return;
     }
+    nextPage();
     printf("\n");
 }
 void nbdata(int i){
@@ -1795,14 +1769,15 @@ void nbdata(int i){
         else if (lang == 2) printf("Attention!\nSince I am between a rock and a hard place, things just rush to me in a second, considering I have nothing to do with making this game better, I have to say, I decide to put it aside for a while\nWhen the new putting system appeared, many problems came along, after two weeks of hard work, there are no longer any visible problems, so I decide to leave this game alone\nIf you have any questions or suggestions, please feel good to contact me, I won't deal with it right away, but I will put them carefully for future updates\nThe life is long, but we need to give up something in the right time, I believe this will lead a better future.\n");
     }
 }
-void notboard(){ //未优化
-    int uc = 4,page = 7,ifRead = 1;
-    while (uc!=3){
+void notboard(){
+    usc = 4;
+    int page = maxPage,ifRead = 1;
+    while (usc!=3){
         if (cl) clearScr();
-        if (uc == 2){
+        if (usc == 2){
             if (page>=maxPage){
-                if (lang == 1) printf("已是最前一页!\n");
-                else if (lang == 2) printf("You are on the first page now!\n");
+                if (lang == 1) printf("已是最新一页!\n");
+                else if (lang == 2) printf("You are on the newest page now!\n");
                 ifRead = 0;
             }
             else{
@@ -1810,10 +1785,10 @@ void notboard(){ //未优化
                 ifRead = 1;
             }
         }
-        else if (uc == 1){
+        else if (usc == 1){
             if (page<=1){
-                if (lang == 1) printf("已是最后一页!\n");
-                else if (lang == 2) printf("You have already reached the last page!\n");
+                if (lang == 1) printf("已是最旧一页!\n");
+                else if (lang == 2) printf("You have reached the oldest page!\n");
                 ifRead = 0;
             }
             else{
@@ -1821,15 +1796,11 @@ void notboard(){ //未优化
                 ifRead = 1;
             }
         }
-        else if (uc != 4) {
-            printf("\n");
-            return;
-        }
         if (ifRead) nbdata(page);
         printf("\n");
         if (lang == 1) printf("1.下一页 2.上一页 3.退出\n");
         else if (lang == 2) printf("1.Next Page 2.Previous Page 3.Quit\n");
-        scanf("%d",&uc);
+        scanf("%d",&usc);
     }
 }
 void runPro(){
@@ -1847,7 +1818,6 @@ void runPro(){
         if (termi){
             if (lang == 1) printf("你已提前终止此局游戏，分数将不会被记录\n");
             else if (lang == 2) printf("You have terminated this game earlier than expected, the scores made in this game won't be recorded.\n");
-            char uc[4];
             cin.getline(uc,4);
             if (cl) clearScr();
             return;
@@ -1879,16 +1849,15 @@ void runPro(){
             else if (lang == 2) printf("You have %lld points\n\n",money);
         }
         if (edi!='n') speGame++;
+        else speGame = 0;
         checkach();
-        char uc[2];
         gets(uc);
     }
     else if (usercho == 2) language();
     else if (usercho == 3){
         creErr();
-        char uc[10];
         getchar();
-        cin.getline(uc,5);
+        cin.getline(uc,10);
     }
     else if (usercho == 4) option();
     else if (usercho == 5) notboard();
