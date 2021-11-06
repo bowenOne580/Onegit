@@ -3,9 +3,10 @@ using namespace std;
 int cardNum[20] = {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1},lenOU,sumOU,Ou[105];
 int Max,cntE[20],cntM[20],cntB[5],totM = 17,totE = 17,mode,lMode,boKing,sco = 100,hisco = 0;
 int lChu[100],lSize,ifChun = 1,lLen,lang = 1,ifGod,dif = 2,ifJiao = 0,win,lose;
-int chun,lenColl[20],maxPage = 7,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],oppor,speGame;
+int chun,lenColl[20],maxPage = 7,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],speGame;
 int haDou,haSin,plaType = 1,calcThree[20],termi,rating,sma,roun,rounds[105],cl = 1;
 int cntAch = 18,usc,usercho;
+double oppor;
 char edi = 'n',uc[10];
 long long money = 3000;
 struct carO{
@@ -93,32 +94,33 @@ void initBeat(){ //未优化
     haDou = 0;
     haSin = 0;
     oppor = 0;
-    oppor+=cntE[12];
-    useful[12]+=6;
+    oppor+=cntE[12]*0.75; //有几个2
+    //useful和oppor优化
+    useful[12]+=4;
     if (cntE[13] == 1 && cntE[14] == 1){
         kingsman[0] = 1; //对王判断
-        oppor+=4;
+        oppor+=3.5;
     }
     for (int i=0;i<13;i++){ //去王优化
         if (cntE[i]>3){
             bomb[i] = 1;
-            useful[i]+=7;
+            useful[i]+=4;
             oppor+=3;
         }
         if (cntE[i]>2){
             tri[i] = 1;
-            useful[i]+=3;
-            oppor+=2;
+            useful[i]+=2;
+            oppor+=2.5;
         }
         if (cntE[i]>1) doub++;
         else{
             if (doub>=3){
                 for (int j=i-doub;j<=i-1;j++){
                     dou[j] = 1;
-                    useful[j]+=2;
+                    useful[j]++;
                 }
                 haDou = 1;
-                oppor++;
+                oppor+=min(1.2*(doub-2),4.5);
             }
             doub = 0;
         }
@@ -130,7 +132,7 @@ void initBeat(){ //未优化
                     useful[j]++;
                 }
                 haSin = 1;
-                oppor++;
+                oppor+=min((sig-4)*1.2,4.5);
             }
             sig = 0;
         }
@@ -275,6 +277,16 @@ void creErr(){
     ofstream output("error.log");
     if (lang == 1) output<<"本次出牌记录如下："<<endl;
     else if (lang == 2) output<<"This game is recorded as following: "<<endl;
+    if (lang == 1) output<<"地主牌是: "<<cardStack[cntB[0]]<<" "<<cardStack[cntB[1]]<<" "<<cardStack[cntB[2]]<<endl;
+    else if (lang == 2) output<<"Extra Cards for The Landlord: "<<cardStack[cntB[0]]<<" "<<cardStack[cntB[1]]<<" "<<cardStack[cntB[2]]<<endl;
+    if (rounds[0] == 17){
+        if (lang == 1) output<<"你是地主"<<endl;
+        else if (lang == 2) output<<"You are the Landlord"<<endl;
+    }
+    else{
+        if (lang == 1) cout<<"对手是地主"<<endl;
+        else if (lang == 2) cout<<"Rival is the Landlord"<<endl;
+    }
     for (int i=0;i<=roun;i++){
         if (i == 0){
             if (lang == 1) output<<"对手的牌：";
@@ -343,14 +355,14 @@ void selfOut(){ //未优化
         if (cntD>=2){
             int i,j;
             if (plaType == 1){
-                i = weigh(Ou[0]+1,10,6);
+                i = weigh(0,10,6);
                 if (i == -1) flag = 1;
             }
-            else if (plaType == 2) i = weigh(Ou[0]+1,11,3);
+            else if (plaType == 2) i = weigh(0,11,3);
             if (i!=-1){
                 cntE[i]-=3;
                 if (plaType == 1) j = i+1;
-                else if (plaType == 2) j = weigh(Ou[0]+1,11,3);
+                else if (plaType == 2) j = weigh(0,11,3);
                 if (j!=-1){
                     cntE[j]-=3;
                     int k = weigh(0,12,2);
@@ -394,14 +406,14 @@ void selfOut(){ //未优化
         else if (cntD == 1 || cntS >=2){
             int i,j;
             if (plaType == 1){
-                i = weigh(Ou[0]+1,10,6);
+                i = weigh(0,10,6);
                 if (i == -1) flag = 1;
             }
-            else if (plaType == 2) i = weigh(Ou[0]+1,11,3);
+            else if (plaType == 2) i = weigh(0,11,3);
             if (i!=-1){
                 cntE[i]-=3;
                 if (plaType == 1) j = i+1;
-                else if (plaType == 2) j = weigh(Ou[0]+1,11,3);
+                else if (plaType == 2) j = weigh(0,11,3);
                 if (j!=-1){
                     cntE[j]-=3;
                     int k = weigh(0,14,1);
@@ -443,14 +455,14 @@ void selfOut(){ //未优化
         else{
             int i,j;
             if (plaType == 1){
-                i = weigh(Ou[0]+1,10,6);
+                i = weigh(0,10,6);
                 if (i == -1) flag = 1;
             }
-            else if (plaType == 2) i = weigh(Ou[0]+1,11,3);
+            else if (plaType == 2) i = weigh(0,11,3);
             if (i!=-1){
                 cntE[i]-=3;
                 if (plaType == 1) j = i+1;
-                else if (plaType == 2) j = weigh(Ou[0]+1,11,3);
+                else if (plaType == 2) j = weigh(0,11,3);
                 if (j!=-1){
                     sco*=2;
                     if (i>j){
@@ -598,8 +610,8 @@ void selfOut(){ //未优化
             lLen = Max;
         }
         else{
-            int i = weigh(0,12,2);
-            if (i!=-1){
+            int i = weigh(0,12,2),j = weigh(0,14,1);
+            if (i<j && i!=-1){
                 cardOut[roun].cards[0] = cardStack[i];
                 cardOut[roun].cards[1] = cardStack[i];
                 cardOut[roun].id = 1;
@@ -611,14 +623,13 @@ void selfOut(){ //未优化
                 lMode = 2;
             }
             else{
-                int i = weigh(0,14,1);
-                if (i!=-1){
-                    cardOut[roun].cards[0] = cardStack[i];
+                if (j!=-1){
+                    cardOut[roun].cards[0] = cardStack[j];
                     cardOut[roun].id = 1;
                     rounds[roun] = 0;
-                    lChu[++lSize] = i;
+                    lChu[++lSize] = j;
                     lLen = 1;
-                    cntE[i]--;
+                    cntE[j]--;
                     totE--;
                     lMode = 1;
                 }
@@ -1022,13 +1033,13 @@ void pre(){
         else if (lang == 2) printf("You are the Landlord now!\n");
     }
     else if (iwant != 4){
-        if (oppor>=6){
+        if (oppor>=8.5){
             if (lang == 1) printf("对手叫3分，抢地主\n");
             else if (lang == 2) printf("The Rival has a strong wish to be the landlord\n");
             sco*=3;
             who = 1;
         }
-        else if (oppor>=4 && iwant == 3){
+        else if (oppor>=4.5 && iwant == 3){
             if (lang == 1) printf("对手叫2分，抢地主\n你要抢吗？ 1.3分 2.不叫\n");
             else if (lang == 2) printf("The Rival want to get this position\nAre you going to fight for this? 1.Willing to 2.Not interested\n");
             scanf("%s",&iwant);
@@ -1042,7 +1053,7 @@ void pre(){
                 who = 1;
             }
         }
-        else if (oppor<4){
+        else if (oppor<4.5){
             if (lang == 1) printf("你叫到了地主!\n");
             else if (lang == 2) printf("You are the Landlord now!\n");
         }
@@ -1444,10 +1455,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 10/7/2021\n");
-    else if (lang == 2) printf("Release Date: 10/7/2021\n");
-    if (lang == 1) printf("版本信息: 2.4.2");
-    else if (lang == 2) printf("Version: 2.4.2");
+    if (lang == 1) printf("发行日期: 11/6/2021\n");
+    else if (lang == 2) printf("Release Date: 11/6/2021\n");
+    if (lang == 1) printf("版本信息: 2.4.3");
+    else if (lang == 2) printf("Version: 2.4.3");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
@@ -1817,7 +1828,7 @@ void runPro(){
         if (termi){
             if (lang == 1) printf("你已提前终止此局游戏，分数将不会被记录\n");
             else if (lang == 2) printf("You have terminated this game earlier than expected, the scores made in this game won't be recorded.\n");
-            cin.getline(uc,4);
+            nextPage();
             if (cl) clearScr();
             return;
         }
