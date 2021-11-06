@@ -189,31 +189,32 @@ void ran(){
         else if (lang == 2) printf("Enter 3 Landlord Cards\n");
         cin.getline(ui,105);
         fakeLen = strlen(ui);
+        int now = 0;
         for (int i=0;i<fakeLen;i++){
             if (ui[i] == ' ') continue;
             else if (ui[i] > '1' && ui[i] <= '9'){
-                if (ui[i] == '2') cntB[i] = 12;
-                else cntB[i] = ui[i]-'0'-3;
+                if (ui[i] == '2') cntB[now++] = 12;
+                else cntB[now++] = ui[i]-'0'-3;
             }
-            else if (ui[i] == 'J' || ui[i] == 'j') cntB[i] = 8;
-            else if (ui[i] == 'Q' || ui[i] == 'q') cntB[i] = 9;
+            else if (ui[i] == 'J' || ui[i] == 'j') cntB[now++] = 8;
+            else if (ui[i] == 'Q' || ui[i] == 'q') cntB[now++] = 9;
             else if (ui[i] == 'K' || ui[i] == 'k'){
                 if (i!=fakeLen-1){
                     if (ui[i+1] == 'I' || ui[i+1] == 'i'){
-                        cntB[i] = 14;
+                        cntB[now++] = 14;
                         i += 3;
                     }
-                    else cntB[i] = 10;
+                    else cntB[now++] = 10;
                 }
-                else cntB[i] = 10;
+                else cntB[now++] = 10;
             }
-            else if (ui[i] == 'A' || ui[i] == 'a') cntB[i] = 11;
+            else if (ui[i] == 'A' || ui[i] == 'a') cntB[now++] = 11;
             else if (ui[i] == 'S' || ui[i] == 's'){
-                cntB[i] = 13; //对应SMALL
+                cntB[now++] = 13; //对应SMALL
                 i += 4;
             }
             else if (ui[i] == '1' && i+1<fakeLen){
-                cntB[i] = 7; //对应10
+                cntB[now++] = 7; //对应10
                 i += 1;
             }
         }
@@ -405,7 +406,7 @@ int weigh(int left,int right,int length){
     }
     return mpos;
 }
-void selfOut(){
+void selfOut(){ //未优化
     roun++;
     int cntT = 0,cntD = 0,cntS = 0,flag = 2;
     for (int i=0;i<13;i++){
@@ -423,14 +424,14 @@ void selfOut(){
         if (cntD>=2){
             int i,j;
             if (plaType == 1){
-                i = weigh(Ou[0]+1,10,6);
+                i = weigh(0,10,6);
                 if (i == -1) flag = 1;
             }
-            else if (plaType == 2) i = weigh(Ou[0]+1,11,3);
+            else if (plaType == 2) i = weigh(0,11,3);
             if (i!=-1){
                 cntE[i]-=3;
                 if (plaType == 1) j = i+1;
-                else if (plaType == 2) j = weigh(Ou[0]+1,11,3);
+                else if (plaType == 2) j = weigh(0,11,3);
                 if (j!=-1){
                     cntE[j]-=3;
                     int k = weigh(0,12,2);
@@ -474,14 +475,14 @@ void selfOut(){
         else if (cntD == 1 || cntS >=2){
             int i,j;
             if (plaType == 1){
-                i = weigh(Ou[0]+1,10,6);
+                i = weigh(0,10,6);
                 if (i == -1) flag = 1;
             }
-            else if (plaType == 2) i = weigh(Ou[0]+1,11,3);
+            else if (plaType == 2) i = weigh(0,11,3);
             if (i!=-1){
                 cntE[i]-=3;
                 if (plaType == 1) j = i+1;
-                else if (plaType == 2) j = weigh(Ou[0]+1,11,3);
+                else if (plaType == 2) j = weigh(0,11,3);
                 if (j!=-1){
                     cntE[j]-=3;
                     int k = weigh(0,14,1);
@@ -523,14 +524,14 @@ void selfOut(){
         else{
             int i,j;
             if (plaType == 1){
-                i = weigh(Ou[0]+1,10,6);
+                i = weigh(0,10,6);
                 if (i == -1) flag = 1;
             }
-            else if (plaType == 2) i = weigh(Ou[0]+1,11,3);
+            else if (plaType == 2) i = weigh(0,11,3);
             if (i!=-1){
                 cntE[i]-=3;
                 if (plaType == 1) j = i+1;
-                else if (plaType == 2) j = weigh(Ou[0]+1,11,3);
+                else if (plaType == 2) j = weigh(0,11,3);
                 if (j!=-1){
                     sco*=2;
                     if (i>j){
@@ -678,8 +679,8 @@ void selfOut(){
             lLen = Max;
         }
         else{
-            int i = weigh(0,12,2);
-            if (i!=-1){
+            int i = weigh(0,12,2),j = weigh(0,14,1);
+            if (i<j && i!=-1){
                 cardOut[roun].cards[0] = cardStack[i];
                 cardOut[roun].cards[1] = cardStack[i];
                 cardOut[roun].id = 1;
@@ -691,14 +692,13 @@ void selfOut(){
                 lMode = 2;
             }
             else{
-                int i = weigh(0,14,1);
-                if (i!=-1){
-                    cardOut[roun].cards[0] = cardStack[i];
+                if (j!=-1){
+                    cardOut[roun].cards[0] = cardStack[j];
                     cardOut[roun].id = 1;
                     rounds[roun] = 0;
-                    lChu[++lSize] = i;
+                    lChu[++lSize] = j;
                     lLen = 1;
-                    cntE[i]--;
+                    cntE[j]--;
                     totE--;
                     lMode = 1;
                 }
@@ -1408,10 +1408,10 @@ void ingame(){
     }
 }
 void about(){
-    if (lang == 1) printf("发行日期: 10/7/2021\n");
-    else if (lang == 2) printf("Release Date: 10/7/2021\n");
-    if (lang == 1) printf("版本信息: 1.0.0\n");
-    else if (lang == 2) printf("Version: 1.0.0\n");
+    if (lang == 1) printf("发行日期: 11/6/2021\n");
+    else if (lang == 2) printf("Release Date: 11/6/2021\n");
+    if (lang == 1) printf("版本信息: 1.0.1\n");
+    else if (lang == 2) printf("Version: 1.0.1\n");
     if (lang == 1) printf("长期服务版本\n");
     else if (lang == 2) printf("LTS(Long Time Service) Channel\n");
     printf("\n");
