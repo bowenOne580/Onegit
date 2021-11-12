@@ -38,23 +38,28 @@ string achMonCN[20] = {"元","二","三","四","五","六","七","八","九","十","十一",
 string achMonEN[20] = {"January","February","March","April","May","June","July","August","September","October","November","December"};
 void readVars(){
     ifstream input("data.txt");
+    if (!input) return;
     input>>money>>hisco>>lang>>ifGod>>win>>lose>>dif;
     //已使用18个
-    for (int i = 1;i <= cntAch;i++) input>>ach[i].ifGet>>ach[i].day>>ach[i].mon>>ach[i].yr;
+    for (int i=1;i<=cntAch;i++) input>>ach[i].ifGet>>ach[i].day>>ach[i].mon>>ach[i].yr;
     input>>speGame>>plaType>>rating>>cl;
     if (edi == 'n') speGame = 0;
     input.close();
 }
 void writeVars(){
-    ofstream output;
-    output.open("data.txt");
-    output<<money<<endl<<hisco<<endl<<lang<<endl<<ifGod<<endl<<win<<endl<<lose<<endl<<dif<<endl;
-    for (int i=1;i<=cntAch;i++) output<<ach[i].ifGet<<" "<<ach[i].day<<" "<<ach[i].mon<<" "<<ach[i].yr<<endl;
-    output<<speGame<<endl<<plaType<<endl<<rating<<endl<<cl<<endl;
+    ofstream output("data.txt");
+    output<<money<<"\n"<<hisco<<"\n"<<lang<<"\n"<<ifGod<<"\n"<<win<<"\n"<<lose<<"\n"<<dif<<"\n";
+    for (int i=1;i<=cntAch;i++) output<<ach[i].ifGet<<" "<<ach[i].day<<" "<<ach[i].mon<<" "<<ach[i].yr<<"\n";
+    output<<speGame<<"\n"<<plaType<<"\n"<<rating<<"\n"<<cl<<"\n";
     output.close();
 }
 void clearScr(){
     system("cls");
+}
+void Back(){
+    money = 3000;
+    hisco = win = lose = rating = 0;
+    for (int i=1;i<=cntAch;i++) ach[i].ifGet = ach[i].day = ach[i].mon = ach[i].yr = 0;
 }
 void Clear(){
     for (int i=0;i<=12;i++) cardNum[i] = 4;
@@ -72,11 +77,6 @@ void Clear(){
     totM = totE = 17;
     sco = 100;
     ifChun = 1;
-}
-void Back(){
-    money = 3000;
-    hisco = win = lose = rating = 0;
-    for (int i=1;i<=cntAch;i++) ach[i].ifGet = 0;
 }
 void nextPage(){
     getchar();
@@ -145,23 +145,17 @@ void ran(){
         r = rand()%15;
         if (cardNum[r] == 0) continue;
         cardNum[r]--;
-        if (num < 17) cntM[r]++;
-        if (num > 19) cntE[r]++;
-        if (num > 16 && num < 20) cntB[num-17] = r;
+        if (num<=16) cntM[r]++;
+        if (num>=20) cntE[r]++;
+        if (num>=17 && num<=19) cntB[num-17] = r;
         num++;
     }
     initBeat();
     int op1 = oppor;
-    for (int i=0;i<=14;i++){
-        swap(cntM[i],cntE[i]);
-    }
+    for (int i=0;i<=14;i++) swap(cntM[i],cntE[i]);
     initBeat();
     int op2 = oppor;
-    if (op2<op1){
-        for (int i=0;i<=14;i++){
-            swap(cntM[i],cntE[i]);
-        }
-    }
+    if (op2<op1) for (int i=0;i<=14;i++) swap(cntM[i],cntE[i]);
 }
 int calc(){ //未优化
     int a;
@@ -275,26 +269,41 @@ int Save(){ //未优化
 }
 void creErr(){
     ofstream output("error.log");
-    if (lang == 1) output<<"本次出牌记录如下："<<endl;
-    else if (lang == 2) output<<"This game is recorded as following: "<<endl;
-    if (lang == 1) output<<"地主牌是: "<<cardStack[cntB[0]]<<" "<<cardStack[cntB[1]]<<" "<<cardStack[cntB[2]]<<endl;
-    else if (lang == 2) output<<"Extra Cards for The Landlord: "<<cardStack[cntB[0]]<<" "<<cardStack[cntB[1]]<<" "<<cardStack[cntB[2]]<<endl;
-    if (rounds[0] == 17){
-        if (lang == 1) output<<"你是地主"<<endl;
-        else if (lang == 2) output<<"You are the Landlord"<<endl;
+    if (lang == 1) output<<"本次出牌记录如下："<<"\n\n";
+    else if (lang == 2) output<<"This game is recorded as following: "<<"\n\n";
+    if (lang == 1) output<<"地主牌是: ";
+    else if (lang == 2) output<<"Extra Cards for The Landlord: ";
+    output<<cardStack[cntB[0]]<<" "<<cardStack[cntB[1]]<<" "<<cardStack[cntB[2]]<<"\n";
+    int tar = 0;
+    if (rounds[0] == 16){
+        if (lang == 1) output<<"你是地主"<<"\n";
+        else if (lang == 2) output<<"You are the Landlord"<<"\n";
+        tar = 1;
     }
     else{
-        if (lang == 1) cout<<"对手是地主"<<endl;
-        else if (lang == 2) cout<<"Rival is the Landlord"<<endl;
+        if (lang == 1) output<<"对手是地主"<<"\n";
+        else if (lang == 2) output<<"Rival is the Landlord"<<"\n";
+    }
+    int flag;
+    for (int i=0;i<=rounds[tar];i++){
+        flag = 0;
+        for (int j=0;j<=2;j++){
+            if (cardStack[cntB[j]] == cardOut[tar].cards[i]){
+                cntB[j] = -1;
+                flag = 1;
+                break;
+            }
+        }
+        if (flag) cardOut[tar].cards[i] = " ";
     }
     for (int i=0;i<=roun;i++){
         if (i == 0){
-            if (lang == 1) output<<"对手的牌：";
-            else if (lang == 2) output<<"Rival's cards: ";
+            if (lang == 1) output<<"对手的牌（不含地主牌）：";
+            else if (lang == 2) output<<"Rival's cards(Landlord Cards not included): ";
         }
         if (i == 1){
-            if (lang == 1) output<<"你的牌：";
-            else if (lang == 2) output<<"Your cards: ";
+            if (lang == 1) output<<"你的牌（不含地主牌）：";
+            else if (lang == 2) output<<"Your cards(Landlord Cards not included): ";
         }
         if (cardOut[i].id == 1){
             if (lang == 1) output<<"对手出牌：";
@@ -305,9 +314,9 @@ void creErr(){
             else if (lang == 2) output<<"You put: ";
         }
         for (int j=0;j<=rounds[i];j++){
-            output<<cardOut[i].cards[j]<<" ";
+            if (cardOut[i].cards[j]!=" ") output<<cardOut[i].cards[j]<<" ";
         }
-        output<<endl;
+        output<<"\n";
     }
     output.close();
     if (lang == 1) printf("已生成错误文件\n");
@@ -1455,10 +1464,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 11/6/2021\n");
-    else if (lang == 2) printf("Release Date: 11/6/2021\n");
-    if (lang == 1) printf("版本信息: 2.4.3");
-    else if (lang == 2) printf("Version: 2.4.3");
+    if (lang == 1) printf("发行日期: 10/7/2021\n");
+    else if (lang == 2) printf("Release Date: 10/7/2021\n");
+    if (lang == 1) printf("版本信息: 2.4.2");
+    else if (lang == 2) printf("Version: 2.4.2");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
