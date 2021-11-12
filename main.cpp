@@ -1464,10 +1464,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 10/7/2021\n");
-    else if (lang == 2) printf("Release Date: 10/7/2021\n");
-    if (lang == 1) printf("版本信息: 2.4.2");
-    else if (lang == 2) printf("Version: 2.4.2");
+    if (lang == 1) printf("发行日期: 11/12/2021\n");
+    else if (lang == 2) printf("Release Date: 11/12/2021\n");
+    if (lang == 1) printf("版本信息: 2.4.4");
+    else if (lang == 2) printf("Version: 2.4.4");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
