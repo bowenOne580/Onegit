@@ -7,7 +7,7 @@ int chun,lenColl[20],maxPage = 7,tri[20],bomb[20],useful[20],dou[20],si[20],king
 int haDou,haSin,plaType = 1,calcThree[20],termi,rating,sma,roun,rounds[105],cl = 1;
 int cntAch = 18,usc,usercho;
 double oppor;
-char edi = 'n',uc[10];
+char edi = 'y',uc[10];
 long long money = 3000;
 struct carO{
     string cards[25];
@@ -1464,10 +1464,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 11/12/2021\n");
-    else if (lang == 2) printf("Release Date: 11/12/2021\n");
-    if (lang == 1) printf("版本信息: 2.4.4");
-    else if (lang == 2) printf("Version: 2.4.4");
+    if (lang == 1) printf("发行日期: 1/2/2022\n");
+    else if (lang == 2) printf("Release Date: 1/2/2022\n");
+    if (lang == 1) printf("版本信息: 2.4.5");
+    else if (lang == 2) printf("Version: 2.4.5");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
@@ -1491,6 +1491,10 @@ void about(){ //可以用数组表示edition以使代码更美观
     else if (edi == 'g'){
         if (lang == 1) printf("7.6告别版\n");
         else if (lang == 2) printf("July 6th Say Goodbye Edition\n");
+    }
+    else if (edi == 'y'){
+        if (lang == 1) printf("元旦特别版\n");
+        else if (lang == 2) printf("New Year Special Edition\n");
     }
     printf("\n");
     if (lang == 1) printf("此程序受MIT许可证约束\n");
@@ -1787,6 +1791,12 @@ void nbdata(int i){
         if (lang == 1) printf("重大通知:\n由于现在我正处于学习中的重要节点，无论校内还是编程，又考虑到对此游戏的策略优化已接近瓶颈，故决定暂时停止更新\n经过两周的修复与完善，许多发布新出牌系统初期的问题得到了解决，我也从中获益良多，我相信这个版本在质量上已趋于完美，无需更多的完善，便选择在此停止更新\n不过，如果你有任何建议或碰见什么问题，你可以联系我，我会将其分类放好，为之后的更新做准备\n在人生长河中，我们需要及时放下，在未来才能更好前进\n");
         else if (lang == 2) printf("Attention!\nSince I am between a rock and a hard place, things just rush to me in a second, considering I have nothing to do with making this game better, I have to say, I decide to put it aside for a while\nWhen the new putting system appeared, many problems came along, after two weeks of hard work, there are no longer any visible problems, so I decide to leave this game alone\nIf you have any questions or suggestions, please feel good to contact me, I won't deal with it right away, but I will put them carefully for future updates\nThe life is long, but we need to give up something in the right time, I believe this will lead a better future.\n");
     }
+    else if (i == 8){
+        if (lang == 1) printf("发布时间:2022.1.2 23:11\n");
+        else if (lang == 2) printf("Post Time:1/2/2022 23:11\n");
+        if (lang == 1) printf("元旦特别活动：所有对局将获得20%的加成\n");
+        else if (lang == 2) printf("New Year Special Event: Every game will gain 20% more money\n");
+    }
 }
 void notboard(){
     usc = 4;
@@ -1849,6 +1859,7 @@ void runPro(){
             win++;
             if (lang == 1) printf("你赢了!\n你的得分: %d\n",sco);
             else if (lang == 2) printf("You Win!\nYour Score: %d\n",sco);
+            if (edi == 'y') money+=(double)sco*0.2;
             if (edi != 'z') money+=sco;
             else money-=10000000;
             if (sco>hisco){
