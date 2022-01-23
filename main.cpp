@@ -7,7 +7,7 @@ int chun,lenColl[20],maxPage = 7,tri[20],bomb[20],useful[20],dou[20],si[20],king
 int haDou,haSin,plaType = 1,calcThree[20],termi,rating,sma,roun,rounds[105],cl = 1;
 int cntAch = 18,usc,usercho;
 double oppor;
-char edi = 'y',uc[10];
+char edi = 'n',uc[10];
 long long money = 3000;
 struct carO{
     string cards[25];
@@ -1220,6 +1220,12 @@ void ingame(){
     if (lenOU == 0){
         if (lang == 1) printf("你还没有出牌\n");
         else if (lang == 2) printf("You have not put any cards yet\n");
+        if (roun == 1) return;
+        if (lang == 1) printf("对手出了: ");
+        else if (lang == 2) printf("Rival has put: ");
+        for (int i=0;i<=rounds[roun];i++){
+            cout<<cardOut[roun].cards[i]<<" ";
+        }
         return;
     }
     int Size = -1,fakeLen = lenOU,tag,basket[105] = {},Cuo = 0;
@@ -1464,10 +1470,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 1/2/2022\n");
-    else if (lang == 2) printf("Release Date: 1/2/2022\n");
-    if (lang == 1) printf("版本信息: 2.4.5");
-    else if (lang == 2) printf("Version: 2.4.5");
+    if (lang == 1) printf("发行日期: 1/22/2022\n");
+    else if (lang == 2) printf("Release Date: 1/22/2022\n");
+    if (lang == 1) printf("版本信息: 2.4.6");
+    else if (lang == 2) printf("Version: 2.4.6");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
@@ -1499,7 +1505,7 @@ void about(){ //可以用数组表示edition以使代码更美观
     printf("\n");
     if (lang == 1) printf("此程序受MIT许可证约束\n");
     else if (lang == 2) printf("This program is shared and protected under the MIT License\n");
-    printf("Copyright(c)2021 Bowen Wan\n");
+    printf("Copyright(c)2022 Bowen Wan\n");
     printf("\n");
     if (lang == 1) printf("如果你遇到了任何问题，请联系开发者\n项目主页: www.github.com/bowenOne580/Onegit\nQQ: 2797269898\n");
     else if (lang == 2) printf("If you come across any error(s), please feel free to contact with the developer\nProject Homepage: www.github.com/bowenOne580/Onegit\nQQ: 2797269898\n");
