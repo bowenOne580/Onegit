@@ -3,11 +3,11 @@ using namespace std;
 int cardNum[20] = {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1},lenOU,sumOU,Ou[105];
 int Max,cntE[20],cntM[20],cntB[5],totM = 17,totE = 17,mode,lMode,boKing,sco = 100,hisco = 0;
 int lChu[100],lSize,ifChun = 1,lLen,lang = 1,ifGod,dif = 2,ifJiao = 0,win,lose;
-int chun,lenColl[20],maxPage = 7,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],speGame;
+int chun,lenColl[20],maxPage = 9,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],speGame;
 int haDou,haSin,plaType = 1,calcThree[20],termi,rating,sma,roun,rounds[105],cl = 1;
 int cntAch = 18,usc,usercho;
 double oppor;
-char edi = 'n',uc[10];
+char edi = 'f',uc[10];
 long long money = 3000;
 struct carO{
     string cards[25];
@@ -94,23 +94,24 @@ void initBeat(){ //未优化
     haDou = 0;
     haSin = 0;
     oppor = 0;
-    oppor+=cntE[12]*0.75; //有几个2
+    oppor+=cntE[12]*0.6; //有几个2
     //useful和oppor优化
-    useful[12]+=4;
+    useful[12]+=cntE[12];
     if (cntE[13] == 1 && cntE[14] == 1){
         kingsman[0] = 1; //对王判断
-        oppor+=3.5;
+        oppor+=3.2;
     }
     for (int i=0;i<13;i++){ //去王优化
         if (cntE[i]>3){
             bomb[i] = 1;
             useful[i]+=4;
-            oppor+=3;
+            oppor+=2.5;
         }
         if (cntE[i]>2){
             tri[i] = 1;
             useful[i]+=2;
-            oppor+=2.5;
+            oppor+=1.8;
+            if (cntE[i-1]>2) oppor+=1.2;
         }
         if (cntE[i]>1) doub++;
         else{
@@ -120,7 +121,7 @@ void initBeat(){ //未优化
                     useful[j]++;
                 }
                 haDou = 1;
-                oppor+=min(1.2*(doub-2),4.5);
+                oppor+=min(1.2*(doub-2),4.0);
             }
             doub = 0;
         }
@@ -132,7 +133,7 @@ void initBeat(){ //未优化
                     useful[j]++;
                 }
                 haSin = 1;
-                oppor+=min((sig-4)*1.2,4.5);
+                oppor+=min(1.2*(sig-4),4.0);
             }
             sig = 0;
         }
@@ -620,7 +621,9 @@ void selfOut(){ //未优化
         }
         else{
             int i = weigh(0,12,2),j = weigh(0,14,1);
-            if (i<j && i!=-1){
+            if (totM == 1) j = 0x7fffffff;
+            else if (totM == 2) i = 0x7fffffff;
+            if (i<=j && i!=-1){
                 cardOut[roun].cards[0] = cardStack[i];
                 cardOut[roun].cards[1] = cardStack[i];
                 cardOut[roun].id = 1;
@@ -654,6 +657,7 @@ void beat2(){ //急需优化
     initBeat();
     if (mode == 1){
         int i = weigh(Ou[0]+1,14,1);
+        if (totM>8) i = weigh(Ou[0]+1,12,1);
         if (i!=-1){
             cardOut[roun].cards[0] = cardStack[i];
             cardOut[roun].id = 1;
@@ -667,6 +671,7 @@ void beat2(){ //急需优化
     else if (mode == 2){ //对子
         if (boKing) sco*=4;
         int i = weigh(Ou[0]+1,14,2);
+        if (totM>8) i = weigh(Ou[0]+1,12,2);
         if (i!=-1){
             cardOut[roun].cards[0] = cardStack[i];
             cardOut[roun].cards[1] = cardStack[i];
@@ -1470,10 +1475,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 1/22/2022\n");
-    else if (lang == 2) printf("Release Date: 1/22/2022\n");
-    if (lang == 1) printf("版本信息: 2.4.6");
-    else if (lang == 2) printf("Version: 2.4.6");
+    if (lang == 1) printf("发行日期: 1/27/2022\n");
+    else if (lang == 2) printf("Release Date: 1/27/2022\n");
+    if (lang == 1) printf("版本信息: 3.0.0");
+    else if (lang == 2) printf("Version: 3.0.0");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
@@ -1501,6 +1506,10 @@ void about(){ //可以用数组表示edition以使代码更美观
     else if (edi == 'y'){
         if (lang == 1) printf("元旦特别版\n");
         else if (lang == 2) printf("New Year Special Edition\n");
+    }
+    else if (edi == 'f'){
+        if (lang == 1) printf("最终版\n");
+        else if (lang == 2) printf("Final Edition\n");
     }
     printf("\n");
     if (lang == 1) printf("此程序受MIT许可证约束\n");
@@ -1802,6 +1811,12 @@ void nbdata(int i){
         else if (lang == 2) printf("Post Time:1/2/2022 23:11\n");
         if (lang == 1) printf("元旦特别活动：所有对局将获得20%的加成\n");
         else if (lang == 2) printf("New Year Special Event: Every game will gain 20% more money\n");
+    }
+    else if (i == 9){
+        if (lang == 1) printf("发布时间:2022.1.27 21:55\n");
+        else if (lang == 2) printf("Post Time:1/27/2022 21:55\n");
+        if (lang == 1) printf("通知：\n我所学甚少，而要学的又逐渐增加，使得我渐渐没有精力维护这个项目。\n之后可能只会通过局部改进和发布活动来更新了，在学习达到一定境界之前，应该是不会有重大更新了。\n今天对数值进行了最终的优化，希望大家能在这个程序中找到一点乐趣吧。\n");
+        else if (lang == 2) printf("Attention:\nI learnt few, but my ignorance has increased quite a few, so I may not have enough time to maintain this program any more.\nFuture updates only contain partial improvement and new activities, there will probably be no major updates.\nI polished all the values for putting today, the final cut. And I hope you will all have fun and learn something.\n");
     }
 }
 void notboard(){
