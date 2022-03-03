@@ -1457,10 +1457,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 1/27/2022\n");
-    else if (lang == 2) printf("Release Date: 1/27/2022\n");
-    if (lang == 1) printf("版本信息: 3.0.0");
-    else if (lang == 2) printf("Version: 3.0.0");
+    if (lang == 1) printf("发行日期: 3/3/2022\n");
+    else if (lang == 2) printf("Release Date: 3/3/2022\n");
+    if (lang == 1) printf("版本信息: 3.0.1");
+    else if (lang == 2) printf("Version: 3.0.1");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
