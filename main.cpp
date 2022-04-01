@@ -3,11 +3,11 @@ using namespace std;
 int cardNum[20] = {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1},lenOU,sumOU,Ou[105];
 int Max,cntE[20],cntM[20],cntB[5],totM = 17,totE = 17,mode,lMode,boKing,sco = 100,hisco = 0;
 int lChu[100],lSize,ifChun = 1,lLen,lang = 1,ifGod,dif = 2,ifJiao = 0,win,lose;
-int chun,lenColl[20],maxPage = 9,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],speGame;
+int chun,lenColl[20],maxPage = 10,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],speGame,spePoint;
 int haDou,haSin,plaType = 1,calcThree[20],termi,rating,sma,roun,rounds[105],cl = 1;
-int cntAch = 18,usc,usercho;
+int cntAch = 19,usc,usercho;
 double oppor;
-char edi = 'f',uc[10];
+char edi = 'o',uc[10];
 long long money = 3000;
 struct carO{
     string cards[25];
@@ -19,21 +19,22 @@ struct acheivement{
 string cardStack[20] = {"3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2", "SMALL","KING"};
 string achCNStack[25] = {
         "","春天到了","第一场胜仗","常胜将军","无坚不摧","胜败乃兵家常事","即生瑜，何生亮","小康","富翁","富可敌国",
-        "富到无法用int衡量","负翁","金融危机","濒临破产","从头开始","春意盎然","斗地主一岁了!","E32021特别庆祝","剁手快乐"};
+        "富到无法用int衡量","负翁","金融危机","濒临破产","从头开始","春意盎然","斗地主一岁了!","E32021特别庆祝","剁手快乐","您是Prof Alid Loyas大师！"};
 string achENStack[25] = {
         "","The East Wind Is Coming","First Victory!","It's A Piece Of Cake To Beat You","A Winner Of All Time",
         "It's Easier To Fail Than To Success","Is The Robot Smarter Than Me?","Can Afford!","Billionare","Richer Than America(Not China)",
         "Can't Be Measured By Int","Rich In Abs Value","Financial Crysis","Running Out Of Money","Start Again!","Can Feel Spring In The Air Now!",
-        "I Am 1 Year Old!","Special Celebration For E32021","Happy Shopping on Steam Summer Sale 2021!"};
+        "I Am 1 Year Old!","Special Celebration For E32021","Happy Shopping on Steam Summer Sale 2021!","You are Master Prof Alid Loyas!"};
 string descripCN[25] = {
         "","达成1局春天","获得1场胜利","获得10场胜利","获得50场胜利","被打败5次","被打败20次","总点数超过10000","总点数超过30000","总点数超过500000",
         "总点数超过2147480000","总点数低于-10000","总点数低于-50000","总点数低于-1000000","点数过低，重置程序","完成20次春天","在一周年庆版本中完成5局游戏",
-        "在E3特别版中完成1局游戏","在夏促特别版中完成10局游戏"};
+        "在E3特别版中完成1局游戏","在夏促特别版中完成10局游戏","在愚人节特别版中获得超过2000分"};
 string descripEN[25] = {
         "","Do Spring in 1 game(You can find the description of Spring in Help->Rules)","Win for the first time","Win for 10 times","Win for 50 times","Defeated for 5 times","Defeated for 20 times",
         "Get 10000 credits","Get 30000 credits","Get 500000 credits","Get 2147483647 credits","Lower than -10000 credits","Lower than -50000 credits",
         "Lower than -1000000 credits","Credits are getting too low, so that I have to reset it for you","Do 20 Springs",
-        "Finish 5 games in the 1st Anniversary Edition","Finish one game in E3 Special Edition","Finish 10 games in Steam Summer Sale Special Edition"};
+        "Finish 5 games in the 1st Anniversary Edition","Finish one game in E3 Special Edition","Finish 10 games in Steam Summer Sale Special Edition"
+        "Get more than 2000 credits in April Fool Special Edition"};
 string achMonCN[20] = {"元","二","三","四","五","六","七","八","九","十","十一","十二"};
 string achMonEN[20] = {"January","February","March","April","May","June","July","August","September","October","November","December"};
 void readVars(){
@@ -42,15 +43,18 @@ void readVars(){
     input>>money>>hisco>>lang>>ifGod>>win>>lose>>dif;
     //已使用18个
     for (int i=1;i<=cntAch;i++) input>>ach[i].ifGet>>ach[i].day>>ach[i].mon>>ach[i].yr;
-    input>>speGame>>plaType>>rating>>cl;
-    if (edi == 'n') speGame = 0;
+    input>>speGame>>spePoint>>plaType>>rating>>cl;
+    if (edi == 'n'){
+        speGame = 0;
+        spePoint = 0;
+    }
     input.close();
 }
 void writeVars(){
     ofstream output("data.txt");
     output<<money<<endl<<hisco<<endl<<lang<<endl<<ifGod<<endl<<win<<endl<<lose<<endl<<dif<<endl;
     for (int i=1;i<=cntAch;i++) output<<ach[i].ifGet<<" "<<ach[i].day<<" "<<ach[i].mon<<" "<<ach[i].yr<<endl;
-    output<<speGame<<endl<<plaType<<endl<<rating<<endl<<cl<<endl;
+    output<<speGame<<endl<<spePoint<<endl<<plaType<<endl<<rating<<endl<<cl<<endl;
     output.close();
 }
 void clearScr(){
@@ -1457,10 +1461,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 3/3/2022\n");
-    else if (lang == 2) printf("Release Date: 3/3/2022\n");
-    if (lang == 1) printf("版本信息: 3.0.1");
-    else if (lang == 2) printf("Version: 3.0.1");
+    if (lang == 1) printf("发行日期: 4/1/2022\n");
+    else if (lang == 2) printf("Release Date: 4/1/2022\n");
+    if (lang == 1) printf("版本信息: 3.0.2");
+    else if (lang == 2) printf("Version: 3.0.2");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
@@ -1492,6 +1496,10 @@ void about(){ //可以用数组表示edition以使代码更美观
     else if (edi == 'f'){
         if (lang == 1) printf("最终版\n");
         else if (lang == 2) printf("Final Edition\n");
+    }
+    else if (edi == 'o'){
+        if (lang == 1) printf("愚人节特别版\n");
+        else if (lang == 2) printf("April Fool Special Edition\n");
     }
     printf("\n");
     if (lang == 1) printf("此程序受MIT许可证约束\n");
@@ -1677,6 +1685,7 @@ void checkach(){
     if (edi == 'a' && ach[16].ifGet == 0 && speGame==5) markAch(16);
     if (edi == 'e' && ach[17].ifGet == 0) markAch(17);
     if (edi == 's' && ach[18].ifGet == 0 && speGame==10) markAch(18);
+    if (edi == 'o' && ach[19].ifGet == 0 && spePoint>=2000) markAch(19);
 }
 void stat(){
     if ((win+lose) != 0) rating = int((double(win)/(win+lose))*100);
@@ -1800,6 +1809,12 @@ void nbdata(int i){
         if (lang == 1) printf("通知：\n我所学甚少，而要学的又逐渐增加，使得我渐渐没有精力维护这个项目。\n之后可能只会通过局部改进和发布活动来更新了，在学习达到一定境界之前，应该是不会有重大更新了。\n今天对数值进行了最终的优化，希望大家能在这个程序中找到一点乐趣吧。\n");
         else if (lang == 2) printf("Attention:\nI learnt few, but my ignorance has increased quite a few, so I may not have enough time to maintain this program any more.\nFuture updates only contain partial improvement and new activities, there will probably be no major updates.\nI polished all the values for putting today, the final cut. And I hope you will all have fun and learn something.\n");
     }
+    else if (i == 10){
+        if (lang == 1) printf("发布时间:2022.4.1 15:35\n");
+        else if (lang == 2) printf("Post Time:4/1/2022 15:35\n");
+        if (lang == 1) printf("愚人节特别活动：\n在斗地主中赢得2000分以上，以获得Prof Alid Loyas称号。\n");
+        else if (lang == 2) printf("April Fool's Day Special:\nGain more than 2000 credits to win the title of Prof Alid Loyas.\n");
+    }
 }
 void notboard(){
     usc = 4;
@@ -1859,6 +1874,7 @@ void runPro(){
             sco*=2;
         }
         if (totM == 0){
+            if (edi == 'o') sco/=100;
             win++;
             if (lang == 1) printf("你赢了!\n你的得分: %d\n",sco);
             else if (lang == 2) printf("You Win!\nYour Score: %d\n",sco);
@@ -1871,9 +1887,10 @@ void runPro(){
                 else if (lang == 2) printf("Your new record: %d points\n",hisco);
             }
             if (lang == 1) printf("你现在有%lld点了!\n\n",money);
-            else if (lang == 2) printf("You have %lld points now!\n\n",money);
+            else if (lang == 2) printf("You have %lld points now!\n\n",money);\
         }
         else{
+            if (edi == 'o') sco*=5;
             lose++;
             if (lang == 1) printf("你输了!\n对手得分: %d\n",sco);
             else if (lang == 2) printf("You Lose!\nRival's Score: %d\n",sco);
@@ -1881,7 +1898,10 @@ void runPro(){
             if (lang == 1) printf("你还有%lld点\n\n",money);
             else if (lang == 2) printf("You have %lld points\n\n",money);
         }
-        if (edi!='n') speGame++;
+        if (edi!='n'){
+            speGame++;
+            if (totE == 0) spePoint+=sco;
+        }
         checkach();
         gets(uc);
     }
