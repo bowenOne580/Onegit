@@ -7,7 +7,7 @@ int chun,lenColl[20],maxPage = 10,tri[20],bomb[20],useful[20],dou[20],si[20],kin
 int haDou,haSin,plaType = 1,calcThree[20],termi,rating,sma,roun,rounds[105],cl = 1;
 int cntAch = 19,usc,usercho;
 double oppor;
-char edi = 'o',uc[10];
+char edi = 'n',uc[10];
 long long money = 3000;
 struct carO{
     string cards[25];
@@ -1461,10 +1461,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 4/1/2022\n");
-    else if (lang == 2) printf("Release Date: 4/1/2022\n");
-    if (lang == 1) printf("版本信息: 3.0.2");
-    else if (lang == 2) printf("Version: 3.0.2");
+    if (lang == 1) printf("发行日期: 4/30/2022\n");
+    else if (lang == 2) printf("Release Date: 4/30/2022\n");
+    if (lang == 1) printf("版本信息: 3.0.3");
+    else if (lang == 2) printf("Version: 3.0.3");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
