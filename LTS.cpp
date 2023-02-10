@@ -406,7 +406,7 @@ int weigh(int left,int right,int length){
     }
     return mpos;
 }
-void selfOut(){ //未优化
+void selfOut(){
     roun++;
     int cntT = 0,cntD = 0,cntS = 0,flag = 2;
     for (int i=0;i<13;i++){
@@ -680,7 +680,10 @@ void selfOut(){ //未优化
         }
         else{
             int i = weigh(0,12,2),j = weigh(0,14,1);
-            if (i<j && i!=-1){
+            if (totM == 1) j = 0x7fffffff;
+            else if (totM == 2) i = 0x7fffffff;
+            if (i<=j && i!=-1){
+                i = weigh(0,12,2);
                 cardOut[roun].cards[0] = cardStack[i];
                 cardOut[roun].cards[1] = cardStack[i];
                 cardOut[roun].id = 1;
@@ -692,6 +695,14 @@ void selfOut(){ //未优化
                 lMode = 2;
             }
             else{
+                if (totM == 1){
+                    for (int i=14;i>=0;i--){
+                        if (cntE[i]>=1){
+                            j = i;
+                            break;
+                        }
+                    }
+                }
                 if (j!=-1){
                     cardOut[roun].cards[0] = cardStack[j];
                     cardOut[roun].id = 1;
@@ -1408,16 +1419,16 @@ void ingame(){
     }
 }
 void about(){
-    if (lang == 1) printf("发行日期: 11/6/2021\n");
-    else if (lang == 2) printf("Release Date: 11/6/2021\n");
-    if (lang == 1) printf("版本信息: 1.0.1\n");
-    else if (lang == 2) printf("Version: 1.0.1\n");
+    if (lang == 1) printf("发行日期: 2/10/2023\n");
+    else if (lang == 2) printf("Release Date: 2/10/2023\n");
+    if (lang == 1) printf("版本信息: 1.0.2\n");
+    else if (lang == 2) printf("Version: 1.0.2\n");
     if (lang == 1) printf("长期服务版本\n");
     else if (lang == 2) printf("LTS(Long Time Service) Channel\n");
     printf("\n");
     if (lang == 1) printf("此程序受MIT许可证约束\n");
     else if (lang == 2) printf("This program is shared and protected under the MIT License\n");
-    printf("Copyright(c)2021 Bowen Wan\n");
+    printf("Copyright(c)2023 Bowen Wan\n");
     printf("\n");
     if (lang == 1) printf("如果你遇到了任何问题，请联系开发者\n项目主页: www.github.com/bowenOne580/Onegit\nQQ: 2797269898\n");
     else if (lang == 2) printf("If you come across any error(s), please feel free to contact with the developer\nProject Homepage: www.github.com/bowenOne580/Onegit\nQQ: 2797269898\n");

@@ -1,11 +1,12 @@
 #include<bits/stdc++.h>
 using namespace std;
 int cardNum[20] = {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1},lenOU,sumOU,Ou[105];
-int Max,cntE[20],cntM[20],cntB[5],totM = 17,totE = 17,mode,lMode,boKing,sco = 100,hisco = 0;
+int Max,cntE[20],cntM[20],cntB[5],totM = 17,totE = 17,mode,lMode,boKing,sco = 100,hisco = 0,sil = 1;
 int lChu[100],lSize,ifChun = 1,lLen,lang = 1,ifGod,dif = 2,ifJiao = 0,win,lose;
 int chun,lenColl[20],maxPage = 10,tri[20],bomb[20],useful[20],dou[20],si[20],kingsman[2],speGame,spePoint;
 int haDou,haSin,plaType = 1,calcThree[20],termi,rating,sma,roun,rounds[105],cl = 1;
 int cntAch = 19,usc,usercho;
+bool vis[30];
 double oppor;
 char edi = 'n',uc[10];
 long long money = 3000;
@@ -156,7 +157,7 @@ void ran(){
     int num = 0,r;
     while (num!=37){
         r = rand()%15;
-        if (cardNum[r] == 0) continue;
+        if (!cardNum[r]) continue;
         cardNum[r]--;
         if (num<=16) cntM[r]++;
         if (num>=20) cntE[r]++;
@@ -299,17 +300,17 @@ void creErr(){
         if (lang == 1) output<<"对手是地主"<<"\n";
         else if (lang == 2) output<<"Rival is the Landlord"<<"\n";
     }
-    int flag;
+    int flag,tmpp[5];
+    tmpp[0] = cntB[0],tmpp[1] = cntB[1],tmpp[2] = cntB[2];
+    memset(vis,0,sizeof(vis));
     for (int i=0;i<=rounds[tar];i++){
-        flag = 0;
         for (int j=0;j<=2;j++){
-            if (cardStack[cntB[j]] == cardOut[tar].cards[i]){
-                cntB[j] = -1;
-                flag = 1;
+            if (tmpp[j]>=0 && cardStack[cntB[j]] == cardOut[tar].cards[i]){
+                tmpp[j] = -1;
+                vis[i] = 1;
                 break;
             }
         }
-        if (flag) cardOut[tar].cards[i] = " ";
     }
     for (int i=0;i<=roun;i++){
         if (i == 0){
@@ -322,20 +323,22 @@ void creErr(){
         }
         if (cardOut[i].id == 1){
             if (lang == 1) output<<"对手出牌：";
-            else if (lang == 2) output<<"Rival put: ";
+            else if (lang == 2) output<<"Rival puts: ";
         }
         else if (cardOut[i].id == 2){
             if (lang == 1) output<<"你出了：";
             else if (lang == 2) output<<"You put: ";
         }
         for (int j=0;j<=rounds[i];j++){
-            if (cardOut[i].cards[j]!=" ") output<<cardOut[i].cards[j]<<" ";
+            if (!vis[j] || i!=tar) output<<cardOut[i].cards[j]<<" ";
         }
         output<<"\n";
     }
     output.close();
-    if (lang == 1) printf("已生成错误文件\n");
-    else if (lang == 2) printf("Error file has been created\n");
+    if (!sil){
+    	if (lang == 1) printf("已生成错误文件\n");
+    	else if (lang == 2) printf("Error file has been created\n");
+	}
 }
 void beat(){
     if (lang == 1) printf("请等待新出牌系统推出，你现在可以切换到增强版\n");
@@ -638,6 +641,7 @@ void selfOut(){
             if (totM == 1) j = 0x7fffffff;
             else if (totM == 2) i = 0x7fffffff;
             if (i<=j && i!=-1){
+                i = weigh(0,12,2);
                 cardOut[roun].cards[0] = cardStack[i];
                 cardOut[roun].cards[1] = cardStack[i];
                 cardOut[roun].id = 1;
@@ -649,6 +653,14 @@ void selfOut(){
                 lMode = 2;
             }
             else{
+                if (totM == 1){
+                    for (int i=14;i>=0;i--){
+                        if (cntE[i]>=1){
+                            j = i;
+                            break;
+                        }
+                    }
+                }
                 if (j!=-1){
                     cardOut[roun].cards[0] = cardStack[j];
                     cardOut[roun].id = 1;
@@ -1346,6 +1358,7 @@ void ingame(){ //入口
         if (dif == 1) beat();
         else if (dif == 2) beat2();
     }
+    if (sil) creErr();
 }
 void rules(){
     usc = 0;
@@ -1461,10 +1474,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 4/30/2022\n");
-    else if (lang == 2) printf("Release Date: 4/30/2022\n");
-    if (lang == 1) printf("版本信息: 3.0.3");
-    else if (lang == 2) printf("Version: 3.0.3");
+    if (lang == 1) printf("发行日期: 2/10/2023\n");
+    else if (lang == 2) printf("Release Date: 2/10/2023\n");
+    if (lang == 1) printf("版本信息: 3.0.4");
+    else if (lang == 2) printf("Version: 3.0.4");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
@@ -1504,7 +1517,7 @@ void about(){ //可以用数组表示edition以使代码更美观
     printf("\n");
     if (lang == 1) printf("此程序受MIT许可证约束\n");
     else if (lang == 2) printf("This program is shared and protected under the MIT License\n");
-    printf("Copyright(c)2022 Bowen Wan\n");
+    printf("Copyright(c)2023 Bowen Wan\n");
     printf("\n");
     if (lang == 1) printf("如果你遇到了任何问题，请联系开发者\n项目主页: www.github.com/bowenOne580/Onegit\nQQ: 2797269898\n");
     else if (lang == 2) printf("If you come across any error(s), please feel free to contact with the developer\nProject Homepage: www.github.com/bowenOne580/Onegit\nQQ: 2797269898\n");
@@ -1613,10 +1626,20 @@ void option(){
         if (lang == 1) printf("完整\n");
         else if (lang == 2) printf("Complete\n");
     }
-    if (lang == 1) printf("5.重置游戏\n");
-    else if (lang == 2) printf("5.Reset Game\n");
-    if (lang == 1) printf("6.返回\n");
-    else if (lang == 2) printf("6.Back\n");
+    if (lang == 1) printf("5.调试日志：");
+    else if (lang == 2) printf("5.Debug Logs:");
+    if (sil == 0){
+        if (lang == 1) printf("仅需要时生成\n");
+        else if (lang == 2) printf("Generated when needed\n");
+    }
+    else if (sil == 1){
+        if (lang == 1) printf("在每次出牌后静默生成\n");
+        else if (lang == 2) printf("Generated without notification after every put\n");
+    }
+    if (lang == 1) printf("6.重置游戏\n");
+    else if (lang == 2) printf("6.Reset Game\n");
+    if (lang == 1) printf("7.返回\n");
+    else if (lang == 2) printf("7.Back\n");
     scanf("%d",&usc);
     if (cl) clearScr();
     if (usc == 1){
@@ -1642,6 +1665,13 @@ void option(){
         if (cl == 2) cl = 0;
     }
     else if (usc == 5){
+        if (lang == 1) printf("1.仅需要时生成 2.在每次出牌后静默生成\n");
+        else if (lang == 2) printf("1.Generated when needed 2.Generated without notification after every put\n");
+        scanf("%d",&sil);
+        if (sil == 2) sil = 1;
+        else sil = 0;
+    }
+    else if (usc == 6){
         if (lang == 1) printf("你真的想要删除所有数据吗?\n1.是  2.否\n");
         else if (lang == 2) printf("Do you really want to delete all your data?\n1.Yes  2.No\n");
         scanf("%d",&usc);
