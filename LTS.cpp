@@ -64,22 +64,27 @@ void initBeat(){
     haDou = 0;
     haSin = 0;
     oppor = 0;
-    oppor+=cntE[12];
-    useful[12]+=6;
+    oppor+=cntE[12]*0.7; //有几个2
+    //useful和oppor优化
+    useful[12]+=cntE[12];
     if (cntE[13] == 1 && cntE[14] == 1){
         kingsman[0] = 1; //对王判断
-        oppor+=4;
+        oppor+=2.5;
+        useful[13]+=3,useful[14]+=3;
     }
+    if (cntE[13]) useful[13] = 3;
+    if (cntE[14]) useful[14] = 4;
     for (int i=0;i<13;i++){ //去王优化
         if (cntE[i]>3){
             bomb[i] = 1;
-            useful[i]+=7;
-            oppor+=3;
+            useful[i]+=2;
+            oppor+=0.6;
         }
         if (cntE[i]>2){
             tri[i] = 1;
             useful[i]+=3;
-            oppor+=2;
+            oppor+=1.4;
+            if (cntE[i-1]>2) oppor+=0.9;
         }
         if (cntE[i]>1) doub++;
         else{
@@ -89,7 +94,11 @@ void initBeat(){
                     useful[j]+=2;
                 }
                 haDou = 1;
-                oppor++;
+                oppor+=min(1.1+0.5*(doub-2),3.6);
+            }
+            if (doub>3){
+                useful[i-1]--;
+                useful[i-doub]--;
             }
             doub = 0;
         }
@@ -101,11 +110,22 @@ void initBeat(){
                     useful[j]++;
                 }
                 haSin = 1;
-                oppor++;
+                oppor+=min(0.8+0.4*(sig-4),3.1);
+            }
+            if (sig>5){
+                useful[i-1]--;
+                useful[i-sig]--;
             }
             sig = 0;
         }
     }
+    // cout<<"DEBUGGING..."<<"\n";
+    // for (int i=0;i<=14;i++){
+    //     if (i == 12) cout<<"Card 2 has weight "<<useful[12]<<"\n";
+    //     else if (i == 13) cout<<"Card SMALL has weight "<<useful[13]<<"\n";
+    //     else if (i == 14) cout<<"Card KING has weight "<<useful[14]<<"\n";
+    //     else cout<<"Card "<<i+3<<" has weight "<<useful[i]<<"\n";
+    // }
 }
 void ran(){
     int flag = 0;
@@ -397,8 +417,10 @@ int weigh(int left,int right,int length){
         }
     }
     else{
+        // cout<<"This time: ";
         for (int i=left;i<=right;i++){
             if (useful[i]<Min && cntE[i]>=length){
+                // cout<<i<<" "<<useful[i]<<"\n";
                 Min = useful[i];
                 mpos = i;
             }
@@ -581,6 +603,7 @@ void selfOut(){
             lLen = 3;
         }
         else if (cntS>=1){
+            // cout<<"Here in selfout!"<<"\n";
             int i = weigh(0,12,3);
             if (i!=-1){
                 cntE[i]-=3;
@@ -1113,7 +1136,7 @@ void pre(){
         else if (lang == 2) printf("You are the Landlord now!\n");
     }
     else if (iwant != 4){
-        if (oppor>=6){
+        if (oppor>=7){
             if (lang == 1) printf("对手叫3分，抢地主\n");
             else if (lang == 2) printf("The Rival has a strong wish to be the landlord\n");
             sco*=3;
@@ -1419,10 +1442,10 @@ void ingame(){
     }
 }
 void about(){
-    if (lang == 1) printf("发行日期: 2/10/2023\n");
-    else if (lang == 2) printf("Release Date: 2/10/2023\n");
-    if (lang == 1) printf("版本信息: 1.0.2\n");
-    else if (lang == 2) printf("Version: 1.0.2\n");
+    if (lang == 1) printf("发行日期: 3/11/2023\n");
+    else if (lang == 2) printf("Release Date: 3/11/2023\n");
+    if (lang == 1) printf("版本信息: 1.0.3\n");
+    else if (lang == 2) printf("Version: 1.0.3\n");
     if (lang == 1) printf("长期服务版本\n");
     else if (lang == 2) printf("LTS(Long Time Service) Channel\n");
     printf("\n");

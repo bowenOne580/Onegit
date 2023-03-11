@@ -99,24 +99,27 @@ void initBeat(){
     haDou = 0;
     haSin = 0;
     oppor = 0;
-    oppor+=cntE[12]*0.8; //有几个2
+    oppor+=cntE[12]*0.7; //有几个2
     //useful和oppor优化
     useful[12]+=cntE[12];
     if (cntE[13] == 1 && cntE[14] == 1){
         kingsman[0] = 1; //对王判断
-        oppor+=3.2;
+        oppor+=2.5;
+        useful[13]+=3,useful[14]+=3;
     }
+    if (cntE[13]) useful[13] = 3;
+    if (cntE[14]) useful[14] = 4;
     for (int i=0;i<13;i++){ //去王优化
         if (cntE[i]>3){
             bomb[i] = 1;
-            useful[i]+=6;
-            oppor+=2.8;
+            useful[i]+=2;
+            oppor+=0.6;
         }
         if (cntE[i]>2){
             tri[i] = 1;
             useful[i]+=3;
-            oppor+=1.6;
-            if (cntE[i-1]>2) oppor+=1.2;
+            oppor+=1.4;
+            if (cntE[i-1]>2) oppor+=0.9;
         }
         if (cntE[i]>1) doub++;
         else{
@@ -126,7 +129,7 @@ void initBeat(){
                     useful[j]+=2;
                 }
                 haDou = 1;
-                oppor+=min(1.2*(doub-2),4.0);
+                oppor+=min(1.1+0.5*(doub-2),3.6);
             }
             if (doub>3){
                 useful[i-1]--;
@@ -139,10 +142,10 @@ void initBeat(){
             if (sig>=5){
                 for (int j=i-sig;j<=i-1;j++){
                     si[j] = 1;
-                    useful[j]+=2;
+                    useful[j]++;
                 }
                 haSin = 1;
-                oppor+=min(1.1*(sig-4),4.0);
+                oppor+=min(0.8+0.4*(sig-4),3.1);
             }
             if (sig>5){
                 useful[i-1]--;
@@ -151,6 +154,13 @@ void initBeat(){
             sig = 0;
         }
     }
+    // cout<<"DEBUGGING..."<<"\n";
+    // for (int i=0;i<=14;i++){
+    //     if (i == 12) cout<<"Card 2 has weight "<<useful[12]<<"\n";
+    //     else if (i == 13) cout<<"Card SMALL has weight "<<useful[13]<<"\n";
+    //     else if (i == 14) cout<<"Card KING has weight "<<useful[14]<<"\n";
+    //     else cout<<"Card "<<i+3<<" has weight "<<useful[i]<<"\n";
+    // }
 }
 void ran(){
     srand(time(0));
@@ -1073,13 +1083,13 @@ void pre(){
         else if (lang == 2) printf("You are the Landlord now!\n");
     }
     else if (iwant != 4){
-        if (oppor>=8.5){
+        if (oppor>=7){
             if (lang == 1) printf("对手叫3分，抢地主\n");
             else if (lang == 2) printf("The Rival has a strong wish to be the landlord\n");
             sco*=3;
             who = 1;
         }
-        else if (oppor>=4.5 && iwant == 3){
+        else if (oppor>=4 && iwant == 3){
             if (lang == 1) printf("对手叫2分，抢地主\n你要抢吗？ 1.3分 2.不叫\n");
             else if (lang == 2) printf("The Rival want to get this position\nAre you going to fight for this? 1.Willing to 2.Not interested\n");
             scanf("%s",&iwant);
@@ -1093,7 +1103,7 @@ void pre(){
                 who = 1;
             }
         }
-        else if (oppor<4.5){
+        else if (oppor<4){
             if (lang == 1) printf("你叫到了地主!\n");
             else if (lang == 2) printf("You are the Landlord now!\n");
         }
@@ -1164,8 +1174,7 @@ void pre(){
     if (who == 1){
         roun++;
         mode = 11;
-        if (dif == 1) beat();
-        else if (dif == 2) beat2();
+        beat2();
     }
     char t[10];
     gets(t);
@@ -1474,10 +1483,10 @@ void hel(){
     else hel();
 }
 void about(){ //可以用数组表示edition以使代码更美观
-    if (lang == 1) printf("发行日期: 2/10/2023\n");
-    else if (lang == 2) printf("Release Date: 2/10/2023\n");
-    if (lang == 1) printf("版本信息: 3.0.4");
-    else if (lang == 2) printf("Version: 3.0.4");
+    if (lang == 1) printf("发行日期: 3/11/2023\n");
+    else if (lang == 2) printf("Release Date: 3/11/2023\n");
+    if (lang == 1) printf("版本信息: 3.0.5");
+    else if (lang == 2) printf("Version: 3.0.5");
     if (edi == 'n'){
         if (lang == 1) printf("正式版\n");
         else if (lang == 2) printf("Stable Channel\n");
